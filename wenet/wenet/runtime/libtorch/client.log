@@ -1,0 +1,21 @@
+I1010 13:33:13.422717 13319 websocket_client.cc:67] {"status":"ok","type":"server_ready"}
+I1010 13:33:13.450990 13316 websocket_client_main.cc:56] Send 8000 samples
+I1010 13:33:13.951484 13316 websocket_client_main.cc:56] Send 8000 samples
+I1010 13:33:14.451980 13316 websocket_client_main.cc:56] Send 8000 samples
+I1010 13:33:14.952476 13316 websocket_client_main.cc:56] Send 8000 samples
+I1010 13:33:15.452952 13316 websocket_client_main.cc:56] Send 8000 samples
+I1010 13:33:15.953658 13316 websocket_client_main.cc:56] Send 8000 samples
+I1010 13:33:16.039139 13319 websocket_client.cc:67] {"status":"ok","type":"partial_result","nbest":"[{\"sentence\":\"我以\"}]"}
+I1010 13:33:16.454196 13316 websocket_client_main.cc:56] Send 8000 samples
+I1010 13:33:16.535023 13319 websocket_client.cc:67] {"status":"ok","type":"partial_result","nbest":"[{\"sentence\":\"我以与父亲\"}]"}
+I1010 13:33:16.954890 13316 websocket_client_main.cc:56] Send 8000 samples
+I1010 13:33:17.041219 13319 websocket_client.cc:67] {"status":"ok","type":"partial_result","nbest":"[{\"sentence\":\"我以与父亲不相见\"}]"}
+I1010 13:33:17.455612 13316 websocket_client_main.cc:56] Send 8000 samples
+I1010 13:33:17.956434 13316 websocket_client_main.cc:56] Send 8000 samples
+I1010 13:33:18.041723 13319 websocket_client.cc:67] {"status":"ok","type":"partial_result","nbest":"[{\"sentence\":\"我以与父亲不相见已二年\"}]"}
+I1010 13:33:18.456939 13316 websocket_client_main.cc:56] Send 8000 samples
+I1010 13:33:18.546661 13319 websocket_client.cc:67] {"status":"ok","type":"partial_result","nbest":"[{\"sentence\":\"我以与父亲不相见已二年余了\"}]"}
+I1010 13:33:18.957391 13316 websocket_client_main.cc:56] Send 8000 samples
+I1010 13:33:19.044051 13319 websocket_client.cc:67] {"status":"ok","type":"partial_result","nbest":"[{\"sentence\":\"我以与父亲不相见已二年余了我最不\"}]"}
+I1010 13:33:19.457881 13316 websocket_client_main.cc:56] Send 8000 samples
+I1010 13:33:19.543771 13319 websocket_client.cc:67] {"status":"ok","type":"partial_result","nbest":"[{\"sentence\":\"我以与父亲不相见已二年余了我最不能忘记\"}]"}
