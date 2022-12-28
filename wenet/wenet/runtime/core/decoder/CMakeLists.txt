@@ -3,6 +3,7 @@ set(decoder_srcs
   asr_model.cc
   context_graph.cc
   ctc_prefix_beam_search.cc
+  ctc_lm_prefix_beam_search.cc
   ctc_wfst_beam_search.cc
   ctc_endpoint.cc
 )
@@ -18,7 +19,7 @@ if(ONNX)
 endif()
 
 add_library(decoder STATIC ${decoder_srcs})
-target_link_libraries(decoder PUBLIC kaldi-decoder frontend post_processor utils)
+target_link_libraries(decoder PUBLIC kaldi-decoder frontend post_processor utils kenlm)
 
 if(ANDROID)
   target_link_libraries(decoder PUBLIC ${PYTORCH_LIBRARY} ${FBJNI_LIBRARY})

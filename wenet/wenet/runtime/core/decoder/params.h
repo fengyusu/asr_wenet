@@ -29,17 +29,23 @@
 #ifdef USE_TORCH
 #include "decoder/torch_asr_model.h"
 #endif
+#include "decoder/ctc_lm_prefix_beam_search.h"
 #include "frontend/feature_pipeline.h"
 #include "post_processor/post_processor.h"
 #include "utils/flags.h"
 #include "utils/string.h"
 
-DEFINE_int32(num_threads, 1, "num threads for ASR model");
+DEFINE_int32(num_threads, 2, "num threads for ASR model");
 
 // TorchAsrModel flags
 DEFINE_string(model_path, "", "pytorch exported model path");
 // OnnxAsrModel flags
 DEFINE_string(onnx_dir, "", "directory where the onnx model is saved");
+
+// OnnxLMModel flags
+DEFINE_string(lm_onnx_dir, "", "directory where the onnx model is saved");
+
+DEFINE_bool(use_quant_model, true, "lowercase final result if needed");
 
 // FeaturePipelineConfig flags
 DEFINE_int32(num_bins, 80, "num mel bins for fbank feature");
@@ -114,6 +120,8 @@ std::shared_ptr<DecodeOptions> InitDecodeOptionsFromFlags() {
   decode_config->ctc_wfst_search_opts.nbest = FLAGS_nbest;
   decode_config->ctc_prefix_search_opts.first_beam_size = FLAGS_nbest;
   decode_config->ctc_prefix_search_opts.second_beam_size = FLAGS_nbest;
+  decode_config->ctc_lm_prefix_search_opts.first_beam_size = FLAGS_nbest;
+  decode_config->ctc_lm_prefix_search_opts.second_beam_size = FLAGS_nbest;
   return decode_config;
 }
 
@@ -125,7 +133,7 @@ std::shared_ptr<DecodeResource> InitDecodeResourceFromFlags() {
     LOG(INFO) << "Reading onnx model ";
     OnnxAsrModel::InitEngineThreads(FLAGS_num_threads);
     auto model = std::make_shared<OnnxAsrModel>();
-    model->Read(FLAGS_onnx_dir);
+    model->Read(FLAGS_onnx_dir, FLAGS_use_quant_model);
     resource->model = model;
 #else
     LOG(FATAL) << "Please rebuild with cmake options '-DONNX=ON'.";
@@ -139,6 +147,22 @@ std::shared_ptr<DecodeResource> InitDecodeResourceFromFlags() {
     resource->model = model;
 #else
     LOG(FATAL) << "Please rebuild with cmake options '-DTORCH=ON'.";
+#endif
+  }
+
+  if (!FLAGS_lm_onnx_dir.empty()) {
+  #ifdef USE_ONNX
+    LOG(INFO) << "Reading lm onnx model ";
+
+    if (FLAGS_onnx_dir.empty()) {
+        OnnxLmModel::InitEngineThreads(FLAGS_num_threads);
+    }
+    auto lm_model = std::make_shared<OnnxLmModel>();
+    lm_model->Read(FLAGS_lm_onnx_dir, FLAGS_use_quant_model);
+    resource->lm_model = lm_model;
+
+#else
+    LOG(FATAL) << "Please rebuild with cmake options '-DONNX=ON'.";
 #endif
   }
 

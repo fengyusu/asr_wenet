@@ -96,9 +96,9 @@ class ASRModel(torch.nn.Module):
         encoder_out, encoder_mask = self.encoder(speech, speech_lengths)
         encoder_out_lens = encoder_mask.squeeze(1).sum(1)
 
-        print("encoder_out.shape ", encoder_out.shape)
-        print("encoder_mask.shape ", encoder_mask.shape)
-        print("encoder_out_lens.shape ", encoder_out_lens.shape)
+        # print("encoder_out.shape ", encoder_out.shape)
+        # print("encoder_mask.shape ", encoder_mask.shape)
+        # print("encoder_out_lens.shape ", encoder_out_lens.shape)
 
         # 2a. Attention-decoder branch
         if self.ctc_weight != 1.0:
@@ -481,6 +481,7 @@ class ASRModel(torch.nn.Module):
         Returns:
             List[int]: Attention rescoring result
         """
+        print(speech.shape)
         assert speech.shape[0] == speech_lengths.shape[0]
         assert decoding_chunk_size != 0
         if reverse_weight > 0.0:

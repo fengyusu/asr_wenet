@@ -1,0 +1,829 @@
+I1116 05:41:54.525818    20 params.h:135] Reading torch model /home/docker_resource/wenetspeech/20220506_u2pp_conformer_libtorch/final.zip
+I1116 05:41:54.545935    20 torch_asr_model.cc:36] Num intra-op threads: 1
+I1116 05:41:54.545958    20 torch_asr_model.cc:37] Num inter-op threads: 1
+I1116 05:41:57.277806    20 torch_asr_model.cc:71] Torch Model Info:
+I1116 05:41:57.277822    20 torch_asr_model.cc:72] 	subsampling_rate 4
+I1116 05:41:57.277842    20 torch_asr_model.cc:73] 	right context 6
+I1116 05:41:57.277845    20 torch_asr_model.cc:74] 	sos 5537
+I1116 05:41:57.277849    20 torch_asr_model.cc:75] 	eos 5537
+I1116 05:41:57.277865    20 torch_asr_model.cc:76] 	is bidirectional decoder 1
+I1116 05:41:57.277869    20 params.h:145] Reading unit table /home/docker_resource/wenetspeech/20220506_u2pp_conformer_libtorch/units.txt
+I1116 05:41:57.288866    20 params.h:169] Reading context /home/docker_resource/wenetspeech/20220506_u2pp_conformer_libtorch/context
+I1116 05:41:57.298038    20 context_graph.cc:46] Contexts count size: 23822
+I1116 05:41:57.488454    20 grpc_server_main.cc:47] Listening at port 10087
+I1116 05:42:49.500409    36 grpc_server.cc:168] Get Recognize request
+I1116 05:42:50.089756    38 grpc_server.cc:38] Received speech start signal, start reading speech
+I1116 05:42:50.190966    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:50.291630    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:50.292747    39 asr_decoder.cc:104] Required 67 get 67
+I1116 05:42:50.392074    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:50.492540    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:50.592820    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:50.693311    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:50.793624    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:50.894134    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:50.994597    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:51.019093    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:42:51.095041    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:51.195515    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:51.295889    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:51.396427    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:51.496819    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:51.597311    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:51.697769    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:51.798422    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:51.898892    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:51.999426    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:52.100010    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:52.200516    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:52.300932    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:52.401540    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:52.502048    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:52.602530    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:52.703038    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:52.803679    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:52.904211    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:53.004739    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:53.105382    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:53.205994    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:53.306473    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:53.406989    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:53.507576    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:53.608002    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:53.708621    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:53.809155    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:53.909869    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:54.010390    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:54.110908    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:54.211470    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:54.312371    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:54.412883    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:54.513525    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:54.614050    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:54.714596    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:54.815222    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:54.915864    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:55.016376    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:55.116966    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:55.217507    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:55.317951    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:55.418447    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:55.519083    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:55.619709    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:55.720199    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:55.820837    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:55.921371    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:56.022063    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:56.122539    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:56.223081    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:56.323627    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:56.424283    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:56.524747    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:56.625277    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:56.725699    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:56.798820    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:42:56.826206    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:56.926712    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:57.027230    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:57.127811    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:57.228361    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:57.328873    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:57.429335    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:57.529914    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:57.630486    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:57.731037    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:57.831540    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:57.932113    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:58.032774    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:58.133365    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:58.233918    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:58.334445    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:58.435087    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:58.535650    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:58.636196    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:58.736743    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:58.837442    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:58.937871    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:59.038340    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:59.138862    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:59.239416    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:59.340003    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:59.440433    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:59.540953    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:59.641546    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:59.742126    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:59.842659    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:42:59.943238    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:00.043733    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:00.144222    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:00.244827    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:00.345371    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:00.446017    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:00.546661    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:00.647276    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:00.747884    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:00.848287    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:00.949060    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:01.049523    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:01.150270    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:01.250885    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:01.351581    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:01.452155    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:01.552700    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:01.653203    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:01.753608    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:01.854091    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:01.954715    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:02.055194    38 grpc_server.cc:84] Received 8000 samples
+I1116 05:43:02.155726    38 grpc_server.cc:84] Received 7488 samples
+I1116 05:43:02.256139    38 grpc_server.cc:52] Received speech end signal
+I1116 05:43:02.256158    38 grpc_server.cc:157] Read all pcm data, wait for decoding thread
+I1116 05:43:09.418795    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:10.919327    39 asr_decoder.cc:195] Partial CTC result 我以
+I1116 05:43:10.919373    39 grpc_server.cc:59] Partial result
+I1116 05:43:10.919595    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:12.497838    39 asr_decoder.cc:195] Partial CTC result 我以与父亲
+I1116 05:43:12.497918    39 grpc_server.cc:59] Partial result
+I1116 05:43:12.498088    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:14.362996    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见
+I1116 05:43:14.363070    39 grpc_server.cc:59] Partial result
+I1116 05:43:14.363273    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:16.081353    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年
+I1116 05:43:16.081403    39 grpc_server.cc:59] Partial result
+I1116 05:43:16.081593    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:17.867794    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了
+I1116 05:43:17.867846    39 grpc_server.cc:59] Partial result
+I1116 05:43:17.868036    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:19.823983    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不
+I1116 05:43:19.824034    39 grpc_server.cc:59] Partial result
+I1116 05:43:19.824234    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:21.784355    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记
+I1116 05:43:21.784412    39 grpc_server.cc:59] Partial result
+I1116 05:43:21.784651    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:24.127211    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他
+I1116 05:43:24.127271    39 grpc_server.cc:59] Partial result
+I1116 05:43:24.127452    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:26.259241    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影
+I1116 05:43:26.259296    39 grpc_server.cc:59] Partial result
+I1116 05:43:26.259449    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:28.610967    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那
+I1116 05:43:28.611066    39 grpc_server.cc:59] Partial result
+I1116 05:43:28.611249    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:30.922273    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天
+I1116 05:43:30.922331    39 grpc_server.cc:59] Partial result
+I1116 05:43:30.922521    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:34.664258    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天<context>逐
+I1116 05:43:34.664319    39 grpc_server.cc:59] Partial result
+I1116 05:43:34.664525    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:38.225790    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了
+I1116 05:43:38.225860    39 grpc_server.cc:59] Partial result
+I1116 05:43:38.226075    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:43.376390    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲
+I1116 05:43:43.376490    39 grpc_server.cc:59] Partial result
+I1116 05:43:43.376684    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:46.316293    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也
+I1116 05:43:46.316357    39 grpc_server.cc:59] Partial result
+I1116 05:43:46.316517    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:50.074429    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了
+I1116 05:43:50.074497    39 grpc_server.cc:59] Partial result
+I1116 05:43:50.074740    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:53.017483    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了
+I1116 05:43:53.017585    39 grpc_server.cc:59] Partial result
+I1116 05:43:53.017822    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:57.050917    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是<context>货
+I1116 05:43:57.050985    39 grpc_server.cc:59] Partial result
+I1116 05:43:57.051218    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:57.153321    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的
+I1116 05:43:57.153373    39 grpc_server.cc:59] Partial result
+I1116 05:43:57.153470    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:57.251593    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子
+I1116 05:43:57.251644    39 grpc_server.cc:59] Partial result
+I1116 05:43:57.251760    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:57.355465    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子我
+I1116 05:43:57.355517    39 grpc_server.cc:59] Partial result
+I1116 05:43:57.355639    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:57.459273    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子我从北京到
+I1116 05:43:57.459331    39 grpc_server.cc:59] Partial result
+I1116 05:43:57.459409    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:57.572113    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子我从北京到徐州
+I1116 05:43:57.572166    39 grpc_server.cc:59] Partial result
+I1116 05:43:57.572314    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:57.681003    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子我从北京到徐州打算
+I1116 05:43:57.681058    39 grpc_server.cc:59] Partial result
+I1116 05:43:57.681210    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:57.792171    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子我从北京到徐州打算跟着父亲
+I1116 05:43:57.792228    39 grpc_server.cc:59] Partial result
+I1116 05:43:57.792325    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:57.902714    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子我从北京到徐州打算跟着父亲奔丧
+I1116 05:43:57.902772    39 grpc_server.cc:59] Partial result
+I1116 05:43:57.902902    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:58.013875    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子我从北京到徐州打算跟着父亲奔丧回家
+I1116 05:43:58.013931    39 grpc_server.cc:59] Partial result
+I1116 05:43:58.014030    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:58.127931    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子我从北京到徐州打算跟着父亲奔丧回家
+I1116 05:43:58.127986    39 grpc_server.cc:59] Partial result
+I1116 05:43:58.128121    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:58.244421    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子我从北京到徐州打算跟着父亲奔丧回家到徐州
+I1116 05:43:58.244441    39 ctc_endpoint.cc:43] Endpointing rule rule3 activated: true,80,20480
+I1116 05:43:58.244444    39 asr_decoder.cc:119] Endpoint is detected at 2051
+I1116 05:43:58.245363    39 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子我从北京到徐州打算跟着父亲奔丧回家到徐州
+I1116 05:43:59.112613    39 asr_decoder.cc:84] Rescoring cost latency: 868ms.
+I1116 05:43:59.112756    39 grpc_server.cc:66] Final result
+I1116 05:43:59.114835    39 asr_decoder.cc:104] Required 67 get 67
+I1116 05:43:59.185534    39 asr_decoder.cc:195] Partial CTC result 按照
+I1116 05:43:59.185628    39 grpc_server.cc:59] Partial result
+I1116 05:43:59.185825    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:59.265354    39 asr_decoder.cc:195] Partial CTC result 按照父亲
+I1116 05:43:59.265405    39 grpc_server.cc:59] Partial result
+I1116 05:43:59.265551    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:59.351600    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满
+I1116 05:43:59.351661    39 grpc_server.cc:59] Partial result
+I1116 05:43:59.351853    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:59.443928    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的
+I1116 05:43:59.443979    39 grpc_server.cc:59] Partial result
+I1116 05:43:59.444139    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:59.519008    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西
+I1116 05:43:59.519066    39 grpc_server.cc:59] Partial result
+I1116 05:43:59.519227    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:59.593595    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起
+I1116 05:43:59.593672    39 grpc_server.cc:59] Partial result
+I1116 05:43:59.593781    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:59.664386    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母
+I1116 05:43:59.664443    39 grpc_server.cc:59] Partial result
+I1116 05:43:59.664613    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:59.738600    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不
+I1116 05:43:59.738655    39 grpc_server.cc:59] Partial result
+I1116 05:43:59.738821    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:59.811735    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌<context>速
+I1116 05:43:59.811805    39 grpc_server.cc:59] Partial result
+I1116 05:43:59.812016    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:59.887588    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下
+I1116 05:43:59.887660    39 grpc_server.cc:59] Partial result
+I1116 05:43:59.887774    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:43:59.971426    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪
+I1116 05:43:59.971524    39 grpc_server.cc:59] Partial result
+I1116 05:43:59.971632    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:00.054780    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父
+I1116 05:44:00.054827    39 grpc_server.cc:59] Partial result
+I1116 05:44:00.054905    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:00.135071    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说
+I1116 05:44:00.135118    39 grpc_server.cc:59] Partial result
+I1116 05:44:00.135195    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:00.215701    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已
+I1116 05:44:00.215755    39 grpc_server.cc:59] Partial result
+I1116 05:44:00.215828    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:00.297410    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此
+I1116 05:44:00.297456    39 grpc_server.cc:59] Partial result
+I1116 05:44:00.297556    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:00.380053    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过
+I1116 05:44:00.380120    39 grpc_server.cc:59] Partial result
+I1116 05:44:00.380201    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:00.467000    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过
+I1116 05:44:00.467056    39 grpc_server.cc:59] Partial result
+I1116 05:44:00.467260    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:00.552826    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在
+I1116 05:44:00.552896    39 grpc_server.cc:59] Partial result
+I1116 05:44:00.552981    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:00.643196    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝
+I1116 05:44:00.643244    39 grpc_server.cc:59] Partial result
+I1116 05:44:00.643424    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:00.732496    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路
+I1116 05:44:00.732551    39 grpc_server.cc:59] Partial result
+I1116 05:44:00.732669    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:00.825309    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路
+I1116 05:44:00.825361    39 grpc_server.cc:59] Partial result
+I1116 05:44:00.825495    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:00.919203    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变
+I1116 05:44:00.919257    39 grpc_server.cc:59] Partial result
+I1116 05:44:00.919355    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:01.016007    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质
+I1116 05:44:01.016062    39 grpc_server.cc:59] Partial result
+I1116 05:44:01.016304    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:01.110602    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质父亲
+I1116 05:44:01.110656    39 grpc_server.cc:59] Partial result
+I1116 05:44:01.110751    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:01.210582    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质父亲怀了灰空
+I1116 05:44:01.210639    39 grpc_server.cc:59] Partial result
+I1116 05:44:01.210857    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:01.313310    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质父亲怀了灰空又
+I1116 05:44:01.313380    39 grpc_server.cc:59] Partial result
+I1116 05:44:01.313486    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:01.418293    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质父亲怀了灰空又借<context>钱办
+I1116 05:44:01.418354    39 grpc_server.cc:59] Partial result
+I1116 05:44:01.418467    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:01.526515    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质父亲怀了灰空又借<context>钱办个丧事
+I1116 05:44:01.526572    39 grpc_server.cc:59] Partial result
+I1116 05:44:01.526716    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:01.633904    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质父亲怀了灰空又借<context>钱办个丧事<context>这
+I1116 05:44:01.633965    39 grpc_server.cc:59] Partial result
+I1116 05:44:01.634117    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:01.736173    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质父亲怀了灰空又借<context>钱办个丧事<context>这些日子
+I1116 05:44:01.736236    39 grpc_server.cc:59] Partial result
+I1116 05:44:01.736327    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:01.838905    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质父亲怀了灰空又借<context>钱办个丧事<context>这些日子<context>加
+I1116 05:44:01.838974    39 grpc_server.cc:59] Partial result
+I1116 05:44:01.839066    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:01.950889    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质父亲怀了灰空又借<context>钱办个丧事<context>这些日子<context>加工光景
+I1116 05:44:01.950907    39 ctc_endpoint.cc:43] Endpointing rule rule3 activated: true,160,20480
+I1116 05:44:01.950911    39 asr_decoder.cc:119] Endpoint is detected at 4102
+I1116 05:44:01.951751    39 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质父亲怀了灰空又借<context>钱办个丧事<context>这些日子<context>加工光景
+I1116 05:44:04.093255    39 asr_decoder.cc:84] Rescoring cost latency: 2142ms.
+I1116 05:44:04.093384    39 grpc_server.cc:66] Final result
+I1116 05:44:04.093855    39 asr_decoder.cc:104] Required 67 get 67
+I1116 05:44:04.155664    39 asr_decoder.cc:195] Partial CTC result 很是
+I1116 05:44:04.155762    39 grpc_server.cc:59] Partial result
+I1116 05:44:04.155987    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:04.219341    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败
+I1116 05:44:04.219400    39 grpc_server.cc:59] Partial result
+I1116 05:44:04.219624    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:04.283167    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半
+I1116 05:44:04.283226    39 grpc_server.cc:59] Partial result
+I1116 05:44:04.283417    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:04.350458    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事
+I1116 05:44:04.350492    39 grpc_server.cc:59] Partial result
+I1116 05:44:04.350672    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:04.418311    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一
+I1116 05:44:04.418370    39 grpc_server.cc:59] Partial result
+I1116 05:44:04.418551    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:04.487493    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了
+I1116 05:44:04.487529    39 grpc_server.cc:59] Partial result
+I1116 05:44:04.487644    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:04.562475    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲
+I1116 05:44:04.562512    39 grpc_server.cc:59] Partial result
+I1116 05:44:04.562652    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:04.633767    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲
+I1116 05:44:04.633805    39 grpc_server.cc:59] Partial result
+I1116 05:44:04.633982    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:04.706393    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧
+I1116 05:44:04.706447    39 grpc_server.cc:59] Partial result
+I1116 05:44:04.706584    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:04.781081    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕
+I1116 05:44:04.781145    39 grpc_server.cc:59] Partial result
+I1116 05:44:04.781296    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:04.858713    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父
+I1116 05:44:04.858752    39 grpc_server.cc:59] Partial result
+I1116 05:44:04.858821    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:04.935497    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到
+I1116 05:44:04.935540    39 grpc_server.cc:59] Partial result
+I1116 05:44:04.935622    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:05.012025    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋<context>试
+I1116 05:44:05.012079    39 grpc_server.cc:59] Partial result
+I1116 05:44:05.012161    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:05.090073    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋<context>试
+I1116 05:44:05.090116    39 grpc_server.cc:59] Partial result
+I1116 05:44:05.090204    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:05.169723    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回
+I1116 05:44:05.169770    39 grpc_server.cc:59] Partial result
+I1116 05:44:05.169871    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:05.251219    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书
+I1116 05:44:05.251279    39 grpc_server.cc:59] Partial result
+I1116 05:44:05.251361    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:05.335002    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书
+I1116 05:44:05.335052    39 grpc_server.cc:59] Partial result
+I1116 05:44:05.335151    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:05.420857    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们
+I1116 05:44:05.420908    39 grpc_server.cc:59] Partial result
+I1116 05:44:05.420994    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:05.508424    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行
+I1116 05:44:05.508483    39 grpc_server.cc:59] Partial result
+I1116 05:44:05.508571    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:05.594942    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行
+I1116 05:44:05.594993    39 grpc_server.cc:59] Partial result
+I1116 05:44:05.595088    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:05.682840    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南
+I1116 05:44:05.682893    39 grpc_server.cc:59] Partial result
+I1116 05:44:05.682983    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:05.772296    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南京时
+I1116 05:44:05.772349    39 grpc_server.cc:59] Partial result
+I1116 05:44:05.772454    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:05.863986    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南京时有朋友
+I1116 05:44:05.864039    39 grpc_server.cc:59] Partial result
+I1116 05:44:05.864138    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:05.957273    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南京时有朋友约
+I1116 05:44:05.957337    39 grpc_server.cc:59] Partial result
+I1116 05:44:05.957433    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:06.053412    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南京时有朋友约去逛<context>街
+I1116 05:44:06.053472    39 grpc_server.cc:59] Partial result
+I1116 05:44:06.053575    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:06.151384    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南京时有朋友约去逛<context>街
+I1116 05:44:06.151443    39 grpc_server.cc:59] Partial result
+I1116 05:44:06.151543    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:06.250418    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南京时有朋友约去逛<context>街勾留了一
+I1116 05:44:06.250476    39 grpc_server.cc:59] Partial result
+I1116 05:44:06.250581    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:06.352001    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南京时有朋友约去逛<context>街勾留了一日
+I1116 05:44:06.352062    39 grpc_server.cc:59] Partial result
+I1116 05:44:06.352159    39 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:06.454823    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南京时有朋友约去逛<context>街勾留了一日第二日上
+I1116 05:44:06.454895    39 grpc_server.cc:59] Partial result
+I1116 05:44:06.455005    39 asr_decoder.cc:104] Required 64 get 34
+I1116 05:44:06.537027    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南京时有朋友约去逛<context>街勾留了一日第二日上午
+I1116 05:44:06.537799    39 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南京时有朋友约去逛<context>街勾留了一日第二日上午
+I1116 05:44:07.775785    39 asr_decoder.cc:84] Rescoring cost latency: 1238ms.
+I1116 05:44:07.775934    39 grpc_server.cc:66] Final result
+I1116 05:44:51.282084    37 grpc_server.cc:168] Get Recognize request
+I1116 05:44:51.282210    41 grpc_server.cc:38] Received speech start signal, start reading speech
+I1116 05:44:51.409430    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:44:51.910426    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:44:51.911645    42 asr_decoder.cc:104] Required 67 get 67
+I1116 05:44:52.411566    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:44:52.414705    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:52.912803    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:44:52.915338    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:53.413954    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:44:53.915012    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:44:53.917512    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:54.008324    42 asr_decoder.cc:195] Partial CTC result 我以
+I1116 05:44:54.008352    42 grpc_server.cc:59] Partial result
+I1116 05:44:54.422688    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:44:54.424049    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:54.497056    42 asr_decoder.cc:195] Partial CTC result 我以与父亲
+I1116 05:44:54.497084    42 grpc_server.cc:59] Partial result
+I1116 05:44:54.960856    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:44:54.961992    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:55.050959    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见
+I1116 05:44:55.050990    42 grpc_server.cc:59] Partial result
+I1116 05:44:55.461606    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:44:55.962622    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:44:55.964884    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:56.057643    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年
+I1116 05:44:56.057672    42 grpc_server.cc:59] Partial result
+I1116 05:44:56.463654    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:44:56.464826    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:56.610602    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了
+I1116 05:44:56.610636    42 grpc_server.cc:59] Partial result
+I1116 05:44:56.964491    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:44:56.965351    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:57.069995    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不
+I1116 05:44:57.070034    42 grpc_server.cc:59] Partial result
+I1116 05:44:57.465474    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:44:57.466197    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:57.555042    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记
+I1116 05:44:57.555078    42 grpc_server.cc:59] Partial result
+I1116 05:44:57.965924    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:44:58.466727    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:44:58.468197    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:58.600117    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他
+I1116 05:44:58.600149    42 grpc_server.cc:59] Partial result
+I1116 05:44:58.967605    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:44:58.968981    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:59.094408    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影
+I1116 05:44:59.094460    42 grpc_server.cc:59] Partial result
+I1116 05:44:59.468513    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:44:59.470424    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:44:59.609663    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那
+I1116 05:44:59.609696    42 grpc_server.cc:59] Partial result
+I1116 05:44:59.969836    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:00.471021    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:00.472344    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:00.620772    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天
+I1116 05:45:00.620823    42 grpc_server.cc:59] Partial result
+I1116 05:45:00.971853    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:00.972812    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:01.080431    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天<context>逐
+I1116 05:45:01.080478    42 grpc_server.cc:59] Partial result
+I1116 05:45:01.473299    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:01.474216    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:01.599143    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了
+I1116 05:45:01.599180    42 grpc_server.cc:59] Partial result
+I1116 05:45:01.974149    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:01.974943    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:02.077456    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲
+I1116 05:45:02.077497    42 grpc_server.cc:59] Partial result
+I1116 05:45:02.475108    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:02.976048    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:02.977572    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:03.103152    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也
+I1116 05:45:03.103193    42 grpc_server.cc:59] Partial result
+I1116 05:45:03.478433    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:03.479923    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:03.632879    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了
+I1116 05:45:03.632917    42 grpc_server.cc:59] Partial result
+I1116 05:45:03.979537    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:03.980829    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:04.109129    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了
+I1116 05:45:04.109167    42 grpc_server.cc:59] Partial result
+I1116 05:45:04.480437    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:04.481142    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:04.580027    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是<context>货
+I1116 05:45:04.580072    42 grpc_server.cc:59] Partial result
+I1116 05:45:04.981663    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:05.483942    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:05.485172    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:05.653992    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的
+I1116 05:45:05.654062    42 grpc_server.cc:59] Partial result
+I1116 05:45:05.985488    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:05.986359    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:06.100340    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子
+I1116 05:45:06.100385    42 grpc_server.cc:59] Partial result
+I1116 05:45:06.486361    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:06.487480    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:06.616268    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子我
+I1116 05:45:06.616310    42 grpc_server.cc:59] Partial result
+I1116 05:45:06.987644    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:07.488613    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:07.489668    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:07.617151    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子我从北京到
+I1116 05:45:07.617214    42 grpc_server.cc:59] Partial result
+I1116 05:45:07.989450    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:07.990495    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:08.114885    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子我从北京到徐州
+I1116 05:45:08.114928    42 grpc_server.cc:59] Partial result
+I1116 05:45:08.491078    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:08.491959    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:08.624660    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子我从北京到徐州打算
+I1116 05:45:08.624708    42 grpc_server.cc:59] Partial result
+I1116 05:45:08.996081    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:08.996709    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:09.118897    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子我从北京到徐州打算跟着父亲
+I1116 05:45:09.118953    42 grpc_server.cc:59] Partial result
+I1116 05:45:09.498013    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:09.999084    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:10.000174    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:10.150197    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子我从北京到徐州打算跟着父亲奔丧
+I1116 05:45:10.150295    42 grpc_server.cc:59] Partial result
+I1116 05:45:10.503206    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:10.506158    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:10.662250    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子我从北京到徐州打算跟着父亲奔丧回家
+I1116 05:45:10.662343    42 grpc_server.cc:59] Partial result
+I1116 05:45:11.008260    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:11.009050    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:11.183938    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子我从北京到徐州打算跟着父亲奔丧回家
+I1116 05:45:11.184016    42 grpc_server.cc:59] Partial result
+I1116 05:45:11.508713    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:12.009485    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:12.010181    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:12.143704    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子我从北京到徐州打算跟着父亲奔丧回家到徐州
+I1116 05:45:12.143724    42 ctc_endpoint.cc:43] Endpointing rule rule3 activated: true,80,20480
+I1116 05:45:12.143728    42 asr_decoder.cc:119] Endpoint is detected at 2051
+I1116 05:45:12.144536    42 asr_decoder.cc:195] Partial CTC result 我以与父亲不相<context>见已二年余了我最不能忘<context>记的是他的背影<context>那年冬天竹母死了父亲的差事也交<context>谢了正是祸不单<context>行的日子我从北京到徐州打算跟着父亲奔丧回家到徐州
+I1116 05:45:12.510376    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:12.631351    42 asr_decoder.cc:84] Rescoring cost latency: 487ms.
+I1116 05:45:12.631433    42 grpc_server.cc:66] Final result
+I1116 05:45:12.633124    42 asr_decoder.cc:104] Required 67 get 67
+I1116 05:45:12.701952    42 asr_decoder.cc:195] Partial CTC result 按照
+I1116 05:45:12.702023    42 grpc_server.cc:59] Partial result
+I1116 05:45:13.013392    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:13.015354    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:13.096192    42 asr_decoder.cc:195] Partial CTC result 按照父亲
+I1116 05:45:13.096231    42 grpc_server.cc:59] Partial result
+I1116 05:45:13.517017    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:13.519068    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:13.658986    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满
+I1116 05:45:13.659020    42 grpc_server.cc:59] Partial result
+I1116 05:45:14.021894    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:14.526506    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:14.527365    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:14.602077    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的
+I1116 05:45:14.602138    42 grpc_server.cc:59] Partial result
+I1116 05:45:15.028558    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:15.029467    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:15.106910    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西
+I1116 05:45:15.106947    42 grpc_server.cc:59] Partial result
+I1116 05:45:15.529474    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:15.530360    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:15.616991    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起
+I1116 05:45:15.617028    42 grpc_server.cc:59] Partial result
+I1116 05:45:16.030263    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:16.531170    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:16.532402    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:16.643697    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母
+I1116 05:45:16.643750    42 grpc_server.cc:59] Partial result
+I1116 05:45:17.032109    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:17.033283    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:17.121120    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不
+I1116 05:45:17.121160    42 grpc_server.cc:59] Partial result
+I1116 05:45:17.533303    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:17.533933    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:17.617341    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌<context>速
+I1116 05:45:17.617380    42 grpc_server.cc:59] Partial result
+I1116 05:45:18.034004    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:18.034678    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:18.116736    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下
+I1116 05:45:18.116781    42 grpc_server.cc:59] Partial result
+I1116 05:45:18.534858    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:19.035800    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:19.036511    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:19.121564    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪
+I1116 05:45:19.121614    42 grpc_server.cc:59] Partial result
+I1116 05:45:19.536573    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:19.537254    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:19.623394    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父
+I1116 05:45:19.623431    42 grpc_server.cc:59] Partial result
+I1116 05:45:20.037467    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:20.038831    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:20.128317    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说
+I1116 05:45:20.128361    42 grpc_server.cc:59] Partial result
+I1116 05:45:20.538852    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:21.039870    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:21.040599    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:21.128630    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已
+I1116 05:45:21.128677    42 grpc_server.cc:59] Partial result
+I1116 05:45:21.540881    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:21.541908    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:21.638435    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此
+I1116 05:45:21.638473    42 grpc_server.cc:59] Partial result
+I1116 05:45:22.042999    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:22.043815    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:22.138860    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过
+I1116 05:45:22.138914    42 grpc_server.cc:59] Partial result
+I1116 05:45:22.543793    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:22.544457    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:22.640311    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过
+I1116 05:45:22.640384    42 grpc_server.cc:59] Partial result
+I1116 05:45:23.044697    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:23.545526    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:23.546346    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:23.704675    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在
+I1116 05:45:23.704713    42 grpc_server.cc:59] Partial result
+I1116 05:45:24.046389    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:24.047396    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:24.167284    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝
+I1116 05:45:24.167327    42 grpc_server.cc:59] Partial result
+I1116 05:45:24.548867    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:24.549710    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:24.646716    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路
+I1116 05:45:24.646760    42 grpc_server.cc:59] Partial result
+I1116 05:45:25.050069    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:25.050735    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:25.187284    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路
+I1116 05:45:25.187340    42 grpc_server.cc:59] Partial result
+I1116 05:45:25.550951    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:26.053714    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:26.054411    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:26.156891    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变
+I1116 05:45:26.156936    42 grpc_server.cc:59] Partial result
+I1116 05:45:26.554467    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:26.555156    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:26.655416    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质
+I1116 05:45:26.655460    42 grpc_server.cc:59] Partial result
+I1116 05:45:27.056712    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:27.057469    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:27.187076    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质父亲
+I1116 05:45:27.187124    42 grpc_server.cc:59] Partial result
+I1116 05:45:27.559305    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:28.062603    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:28.063350    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:28.191630    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质父亲怀了灰空
+I1116 05:45:28.191682    42 grpc_server.cc:59] Partial result
+I1116 05:45:28.566334    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:28.566989    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:28.679256    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质父亲怀了灰空又
+I1116 05:45:28.679307    42 grpc_server.cc:59] Partial result
+I1116 05:45:29.070362    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:29.071233    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:29.181908    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质父亲怀了灰空又借<context>钱办
+I1116 05:45:29.181955    42 grpc_server.cc:59] Partial result
+I1116 05:45:29.571434    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:29.572072    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:29.680085    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质父亲怀了灰空又借<context>钱办个丧事
+I1116 05:45:29.680131    42 grpc_server.cc:59] Partial result
+I1116 05:45:30.072952    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:30.574939    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:30.575611    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:30.692175    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质父亲怀了灰空又借<context>钱办个丧事<context>这
+I1116 05:45:30.692229    42 grpc_server.cc:59] Partial result
+I1116 05:45:31.077795    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:31.079090    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:31.188760    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质父亲怀了灰空又借<context>钱办个丧事<context>这些日子
+I1116 05:45:31.188807    42 grpc_server.cc:59] Partial result
+I1116 05:45:31.578712    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:31.579489    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:31.706197    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质父亲怀了灰空又借<context>钱办个丧事<context>这些日子<context>加
+I1116 05:45:31.706265    42 grpc_server.cc:59] Partial result
+I1116 05:45:32.081362    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:32.582227    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:32.583046    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:32.701622    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质父亲怀了灰空又借<context>钱办个丧事<context>这些日子<context>加工光景
+I1116 05:45:32.701644    42 ctc_endpoint.cc:43] Endpointing rule rule3 activated: true,160,20480
+I1116 05:45:32.701653    42 asr_decoder.cc:119] Endpoint is detected at 4102
+I1116 05:45:32.702571    42 asr_decoder.cc:195] Partial CTC result 按照父亲看<context>见满月狼藉的<context>东西又想<context>起独母不接簌簌地流下眼泪父亲<context>说事已如此不易<context>难过好在天无绝人之<context>路回家变卖点<context>质父亲怀了灰空又借<context>钱办个丧事<context>这些日子<context>加工光景
+I1116 05:45:33.083110    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:33.191190    42 asr_decoder.cc:84] Rescoring cost latency: 489ms.
+I1116 05:45:33.191267    42 grpc_server.cc:66] Final result
+I1116 05:45:33.191681    42 asr_decoder.cc:104] Required 67 get 67
+I1116 05:45:33.257313    42 asr_decoder.cc:195] Partial CTC result 很是
+I1116 05:45:33.257376    42 grpc_server.cc:59] Partial result
+I1116 05:45:33.585439    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:33.586310    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:33.656998    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败
+I1116 05:45:33.657060    42 grpc_server.cc:59] Partial result
+I1116 05:45:34.086692    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:34.087674    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:34.165585    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半
+I1116 05:45:34.165612    42 grpc_server.cc:59] Partial result
+I1116 05:45:34.587762    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:35.090626    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:35.091464    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:35.163694    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事
+I1116 05:45:35.163769    42 grpc_server.cc:59] Partial result
+I1116 05:45:35.591383    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:35.592299    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:35.667562    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一
+I1116 05:45:35.667598    42 grpc_server.cc:59] Partial result
+I1116 05:45:36.092236    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:36.093022    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:36.167119    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了
+I1116 05:45:36.167178    42 grpc_server.cc:59] Partial result
+I1116 05:45:36.592851    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:37.095294    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:37.096145    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:37.169937    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲
+I1116 05:45:37.170003    42 grpc_server.cc:59] Partial result
+I1116 05:45:37.596390    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:37.597102    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:37.673332    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲
+I1116 05:45:37.673364    42 grpc_server.cc:59] Partial result
+I1116 05:45:38.100878    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:38.101577    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:38.183703    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧
+I1116 05:45:38.183735    42 grpc_server.cc:59] Partial result
+I1116 05:45:38.601775    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:38.602478    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:38.681592    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕
+I1116 05:45:38.681629    42 grpc_server.cc:59] Partial result
+I1116 05:45:39.102843    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:39.605006    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:39.605732    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:39.689893    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父
+I1116 05:45:39.689944    42 grpc_server.cc:59] Partial result
+I1116 05:45:40.107231    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:40.108068    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:40.190055    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到
+I1116 05:45:40.190090    42 grpc_server.cc:59] Partial result
+I1116 05:45:40.612452    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:40.613729    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:40.697953    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋<context>试
+I1116 05:45:40.697988    42 grpc_server.cc:59] Partial result
+I1116 05:45:41.113205    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:41.614323    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:41.615361    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:41.700762    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋<context>试
+I1116 05:45:41.700803    42 grpc_server.cc:59] Partial result
+I1116 05:45:42.115744    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:42.116420    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:42.203547    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回
+I1116 05:45:42.203583    42 grpc_server.cc:59] Partial result
+I1116 05:45:42.616499    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:42.617143    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:42.715268    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书
+I1116 05:45:42.715308    42 grpc_server.cc:59] Partial result
+I1116 05:45:43.117313    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:43.118064    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:43.211225    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书
+I1116 05:45:43.211262    42 grpc_server.cc:59] Partial result
+I1116 05:45:43.618197    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:44.120513    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:44.121227    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:44.223099    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们
+I1116 05:45:44.223140    42 grpc_server.cc:59] Partial result
+I1116 05:45:44.623042    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:44.624125    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:44.723865    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行
+I1116 05:45:44.723906    42 grpc_server.cc:59] Partial result
+I1116 05:45:45.126269    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:45.127202    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:45.226699    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行
+I1116 05:45:45.226747    42 grpc_server.cc:59] Partial result
+I1116 05:45:45.628096    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:46.129674    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:46.130313    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:46.233418    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南
+I1116 05:45:46.233476    42 grpc_server.cc:59] Partial result
+I1116 05:45:46.632692    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:46.633397    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:46.733916    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南京时
+I1116 05:45:46.733973    42 grpc_server.cc:59] Partial result
+I1116 05:45:47.134217    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:47.135071    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:47.246740    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南京时有朋友
+I1116 05:45:47.246784    42 grpc_server.cc:59] Partial result
+I1116 05:45:47.637365    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:47.638608    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:47.745481    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南京时有朋友约
+I1116 05:45:47.745535    42 grpc_server.cc:59] Partial result
+I1116 05:45:48.140420    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:48.641880    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:48.642596    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:48.754434    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南京时有朋友约去逛<context>街
+I1116 05:45:48.754477    42 grpc_server.cc:59] Partial result
+I1116 05:45:49.142839    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:49.143458    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:49.250344    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南京时有朋友约去逛<context>街
+I1116 05:45:49.250394    42 grpc_server.cc:59] Partial result
+I1116 05:45:49.644692    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:49.645467    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:49.757304    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南京时有朋友约去逛<context>街勾留了一
+I1116 05:45:49.757357    42 grpc_server.cc:59] Partial result
+I1116 05:45:50.146863    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:50.147583    42 asr_decoder.cc:104] Required 64 get 64
+I1116 05:45:50.262553    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南京时有朋友约去逛<context>街勾留了一日
+I1116 05:45:50.262611    42 grpc_server.cc:59] Partial result
+I1116 05:45:50.649802    41 grpc_server.cc:84] Received 8000 samples
+I1116 05:45:51.150806    41 grpc_server.cc:52] Received speech end signal
+I1116 05:45:51.150862    41 grpc_server.cc:157] Read all pcm data, wait for decoding thread
+I1116 05:45:51.150880    42 asr_decoder.cc:104] Required 64 get 51
+I1116 05:45:54.073132    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南京时有朋友约去逛<context>街勾留了一日第二日
+I1116 05:45:54.073977    42 asr_decoder.cc:195] Partial CTC result 很是残<context>败一半为了伤事一半为了父亲赋<context>闲丧事完毕父亲<context>要到<context>南京谋事我也<context>要回北京念书我们便同<context>行但<context>南京时有朋友约去逛<context>街勾留了一日第二日
+I1116 05:45:55.877315    42 asr_decoder.cc:84] Rescoring cost latency: 1804ms.
+I1116 05:45:55.877367    42 grpc_server.cc:66] Final result

@@ -81,7 +81,7 @@ void GrpcConnectionHandler::OnSpeechData() {
   const int16_t* pcm_data =
       reinterpret_cast<const int16_t*>(request_->audio_data().c_str());
   int num_samples = request_->audio_data().length() / sizeof(int16_t);
-  VLOG(2) << "Received " << num_samples << " samples";
+//  VLOG(2) << "Received " << num_samples << " samples";
   CHECK(feature_pipeline_ != nullptr);
   CHECK(decoder_ != nullptr);
   feature_pipeline_->AcceptWaveform(pcm_data, num_samples);

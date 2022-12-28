@@ -44,8 +44,12 @@ AsrDecoder::AsrDecoder(std::shared_ptr<FeaturePipeline> feature_pipeline,
     CHECK(model_->is_bidirectional_decoder());
   }
   if (nullptr == fst_) {
-    searcher_.reset(new CtcPrefixBeamSearch(opts.ctc_prefix_search_opts,
-                                            resource->context_graph));
+//    searcher_.reset(new CtcPrefixBeamSearch(opts.ctc_prefix_search_opts,
+//                                            resource->context_graph));
+    searcher_.reset(new CtcLmPrefixBeamSearch(opts.ctc_lm_prefix_search_opts,
+                                            resource->context_graph,
+                                            resource->unit_table,
+                                            resource->lm_model));
   } else {
     searcher_.reset(new CtcWfstBeamSearch(*fst_, opts.ctc_wfst_search_opts,
                                           resource->context_graph));
@@ -101,18 +105,20 @@ DecodeState AsrDecoder::AdvanceDecoding(bool block) {
   }
 
   num_frames_ += chunk_feats.size();
-  VLOG(2) << "Required " << num_required_frames << " get "
-          << chunk_feats.size();
+//  VLOG(2) << "Required " << num_required_frames << " get "
+//          << chunk_feats.size();
   Timer timer;
   std::vector<std::vector<float>> ctc_log_probs;
   model_->ForwardEncoder(chunk_feats, &ctc_log_probs);
+//  VLOG(4) << "ctc_log_probs : " << ctc_log_probs.size() << " * "
+//          << (ctc_log_probs.empty() ? 0 : ctc_log_probs[0].size());
   int forward_time = timer.Elapsed();
   timer.Reset();
   searcher_->Search(ctc_log_probs);
   int search_time = timer.Elapsed();
   VLOG(3) << "forward takes " << forward_time << " ms, search takes "
           << search_time << " ms";
-  UpdateResult();
+
 
   if (state != DecodeState::kEndFeats) {
     if (ctc_endpointer_->IsEndpoint(ctc_log_probs, DecodedSomething())) {
@@ -121,15 +127,25 @@ DecodeState AsrDecoder::AdvanceDecoding(bool block) {
     }
   }
 
+  bool finish = (state == DecodeState::kEndFeats || state == DecodeState::kEndpoint);
+  UpdateResult(finish);
+
   start_ = true;
   return state;
 }
 
 void AsrDecoder::UpdateResult(bool finish) {
+
+    if (finish){
+        std::vector<std::vector<float>> ctc_log_probs;
+        searcher_->Search(ctc_log_probs);
+    }
+
   const auto& hypotheses = searcher_->Outputs();
   const auto& inputs = searcher_->Inputs();
   const auto& likelihood = searcher_->Likelihood();
   const auto& times = searcher_->Times();
+  const auto& lm_scores = searcher_->LmScore();
   result_.clear();
 
   CHECK_EQ(hypotheses.size(), likelihood.size());
@@ -138,6 +154,7 @@ void AsrDecoder::UpdateResult(bool finish) {
 
     DecodeResult path;
     path.score = likelihood[i];
+    path.lm_score = lm_scores[i];
     int offset = global_frame_offset_ * feature_frame_shift_in_ms();
     for (size_t j = 0; j < hypothesis.size(); j++) {
       std::string word = symbol_table_->Find(hypothesis[j]);
@@ -189,10 +206,12 @@ void AsrDecoder::UpdateResult(bool finish) {
       path.sentence = post_processor_->Process(path.sentence, finish);
     }
     result_.emplace_back(path);
+
+//    VLOG(4) << "All beam Partial CTC result " << path.lm_score << " " << path.sentence ;
   }
 
   if (DecodedSomething()) {
-    VLOG(1) << "Partial CTC result " << result_[0].sentence;
+    VLOG(1) << "Partial CTC result " << result_[0].sentence << " " << result_[0].score << " " << result_[0].lm_score;
   }
 }
 

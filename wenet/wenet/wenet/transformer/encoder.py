@@ -458,5 +458,5 @@ class ConformerEncoder(BaseEncoder):
                 dropout_rate,
                 normalize_before,
                 concat_after,
-            ) for _ in range( )
+            ) for _ in range(num_blocks)
         ])

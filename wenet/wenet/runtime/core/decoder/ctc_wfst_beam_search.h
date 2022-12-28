@@ -76,6 +76,8 @@ class CtcWfstBeamSearch : public SearchInterface {
   const std::vector<float>& Likelihood() const override { return likelihood_; }
   const std::vector<std::vector<int>>& Times() const override { return times_; }
 
+  const std::vector<float>& LmScore() const override { std::vector<float> empty; return empty; }
+
  private:
   // Sub one and remove <blank>
   void ConvertToInputs(const std::vector<int>& alignment,

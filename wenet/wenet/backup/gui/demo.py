@@ -1,14 +1,7 @@
 # here put the import lib
-import sys
-import os
-import time
-from datetime import datetime, date, timedelta
+from datetime import datetime
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5.QtCore import QTimer
-from PyQt5.QtGui import QImage, QPixmap
-from PyQt5.QtWidgets import QMessageBox
 from PyQt5.Qt import *
 from PyQt5 import QtMultimedia
 from PyQt5.QtCore import QUrl
@@ -16,12 +9,9 @@ from PyQt5.QtCore import QUrl
 
 from ui import Ui_MainWindow
 
-
-import numpy as np
 import cv2
 from PIL import Image, ImageDraw, ImageFont
 
-from multiprocessing import Process, Queue
 import threading
 import grpc
 import soundfile as sf
@@ -32,82 +22,43 @@ import moviepy.editor as mp
 import wenet_pb2 as pb2
 import wenet_pb2_grpc as pb2_grpc
 
-import re
 import numpy as np
-import pandas as pd
 from tqdm import tqdm
 import time
 import os
 import warnings
+import operator
 
 warnings.filterwarnings(action='ignore', category=UserWarning, module='gensim')  # 忽略警告
-import logging
 import os.path
 import sys
-import multiprocessing
-import gensim
 import jieba
 import torch
-from torch.utils.data import *
-import gc
 import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
 import torch.autograd
 
+# from pycorrector.utils.tokenizer import split_text_by_maxlen
+from pypinyin import *
+import pickle
+from loguru import logger
+from transformers import BertTokenizerFast, BertForMaskedLM
 
 
-class Frame(object):
-    def __init__(self, bytes, timestamp, duration):
-        self.bytes = bytes
-        self.timestamp = timestamp
-        self.duration = duration
-        self.is_voice = None
+tag_punctuation = ['X', '，', '。', '！', '？', '、', '：']
+unknown_word = '<UNK>'
+padding_word = '<PAD>'
+unk_tokens = [' ', '“', '”', '‘', '’', '\n', '…', '—', '擤', '\t', '֍', '玕', '']
 
-def audio_generator(file_or_realtime=None,
-                    frame_duration_ms=500, sample_rate=16000, channels=1,
-                    record_second=20):
+init_w2v_path = '/media/sfy/Study/graduation/PostProcess/model/sgns.wiki.word.bz2'
+vocab_file = "/media/sfy/Study/graduation/PostProcess/ChinesePunctuationPredictor/model/vocab.txt"
+emb_model_path = "/media/sfy/Study/graduation/PostProcess/ChinesePunctuationPredictor/model/w2v_embedding.npy"
+lstm_model_path = "/media/sfy/Study/graduation/PostProcess/ChinesePunctuationPredictor/model/wiki_200w_1/bilstm_20_32.final.pt"
+lstm_model_path = "/media/sfy/Study/graduation/PostProcess/ChinesePunctuationPredictor/model/wiki_158w_infrequent/bilstm_2_32.final.pt"
 
-    frame_duration_s = frame_duration_ms / 1000.0
-    frame_byte_size = int(sample_rate * frame_duration_s * 2)
-
-    def yield_frame_data(audio):
-        offset = 0
-        timestamp = 0.0
-        while offset + frame_byte_size < len(audio):
-            yield Frame(audio[offset : offset + frame_byte_size], 0.0, frame_duration_s)
-            timestamp += frame_duration_s
-            offset += frame_byte_size
+corrector_model_path = "/media/sfy/Study/graduation/PostProcess/model/macbert4csc-base-chinese"
 
 
-    if file_or_realtime is None:
 
-        frame_duration_s = frame_duration_ms / 1000.0
-        chunk_size = int(sample_rate * frame_duration_s)
-        p = pyaudio.PyAudio()
-        stream = p.open(format=pyaudio.paInt16, channels=channels,
-                        rate=sample_rate, input=True,
-                        frames_per_buffer=chunk_size)
-        chunk_size = int(sample_rate * frame_duration_ms / 1000.)
-        total_chunk = int(sample_rate / chunk_size * record_second)
-        timestamp = datetime.now()
-
-        for i in range(0, total_chunk + 1):
-            chunk_data = stream.read(chunk_size)
-            yield Frame(chunk_data, 0.0, frame_duration_s)
-
-        stream.stop_stream()
-        stream.close()
-        p.terminate()
-
-    else:
-        raw_data, sr = sf.read(file_or_realtime, dtype=np.int16)
-        assert sr == sample_rate
-        audio = raw_data.tobytes()
-
-        for frame in yield_frame_data(audio):
-            yield frame
-            time.sleep(frame_duration_s)
 
 
 class asr_grpc_client:
@@ -120,11 +71,62 @@ class asr_grpc_client:
         self.done = False
         self.init_asr_result()
 
+    class Frame(object):
+        def __init__(self, bytes, timestamp, duration):
+            self.bytes = bytes
+            self.timestamp = timestamp
+            self.duration = duration
+            self.is_voice = None
+
     def init_asr_result(self):
         self.asr_rt_result = ""
         self.asr_seg_result = []
         self.asr_seg_wordieces = []
         self.final_seg_count = 0
+
+    def audio_generator(self, file_or_realtime=None,
+                        frame_duration_ms=500, sample_rate=16000, channels=1,
+                        record_second=20):
+
+        frame_duration_s = frame_duration_ms / 1000.0
+        frame_byte_size = int(sample_rate * frame_duration_s * 2)
+
+        def yield_frame_data(audio):
+            offset = 0
+            timestamp = 0.0
+            while offset + frame_byte_size < len(audio):
+                yield self.Frame(audio[offset: offset + frame_byte_size], 0.0, frame_duration_s)
+                timestamp += frame_duration_s
+                offset += frame_byte_size
+
+        if file_or_realtime is None:
+
+            frame_duration_s = frame_duration_ms / 1000.0
+            chunk_size = int(sample_rate * frame_duration_s)
+            p = pyaudio.PyAudio()
+            stream = p.open(format=pyaudio.paInt16, channels=channels,
+                            rate=sample_rate, input=True,
+                            frames_per_buffer=chunk_size)
+            chunk_size = int(sample_rate * frame_duration_ms / 1000.)
+            total_chunk = int(sample_rate / chunk_size * record_second)
+            timestamp = datetime.now()
+
+            for i in range(0, total_chunk + 1):
+                chunk_data = stream.read(chunk_size)
+                yield self.Frame(chunk_data, 0.0, frame_duration_s)
+
+            stream.stop_stream()
+            stream.close()
+            p.terminate()
+
+        else:
+            raw_data, sr = sf.read(file_or_realtime, dtype=np.int16)
+            assert sr == sample_rate
+            audio = raw_data.tobytes()
+
+            for frame in yield_frame_data(audio):
+                yield frame
+                time.sleep(frame_duration_s)
 
     """ 
     recgnize_type  1: recognize from wav_file
@@ -224,7 +226,7 @@ class asr_grpc_client:
             request = pb2.Request(decode_config=dec_conf)
             yield request
 
-            generator = audio_generator(file_or_realtime=None if self.recognize_type==2 else self.wav_file,
+            generator = self.audio_generator(file_or_realtime=None if self.recognize_type==2 else self.wav_file,
                                         frame_duration_ms=frame_duration_ms, sample_rate=sample_rate, channels=channels,
                                         record_second=record_second)
 
@@ -305,6 +307,244 @@ class asr_grpc_client:
         print("\r--------------end recorgnize---------------")
 
 
+class MacBertCorrector(object):
+    def __init__(self, model_dir=corrector_model_path):
+        self.name = 'macbert_corrector'
+        t1 = time.time()
+        bin_path = os.path.join(model_dir, 'pytorch_model.bin')
+        if not os.path.exists(bin_path):
+            model_dir = "shibing624/macbert4csc-base-chinese"
+            logger.warning(f'local model {bin_path} not exists, use default HF model {model_dir}')
+
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.tokenizer = BertTokenizerFast.from_pretrained(model_dir)
+        self.model = BertForMaskedLM.from_pretrained(model_dir)
+        self.model.to(self.device)
+        logger.debug("Use device: {}".format(self.device))
+        logger.debug('Loaded macbert4csc model: %s, spend: %.3f s.' % (model_dir, time.time() - t1))
+
+        self.init_prun_sim_filter()
+
+    def save_pickle(self, file_name, data ):
+        f = open(file_name, "wb")
+        pickle.dump(data, f)
+        f.close()
+
+    def load_pickle(self, file_name):
+        f = open(file_name, "rb+")
+        data = pickle.load(f)
+        f.close()
+        return data
+
+    def get_errors(self, corrected_text, origin_text):
+        sub_details = []
+        for i, ori_char in enumerate(origin_text):
+            if i >= len(corrected_text):
+                break
+            if ori_char in unk_tokens:
+                # deal with unk word
+                corrected_text = corrected_text[:i] + ori_char + corrected_text[i:]
+                continue
+            if ori_char != corrected_text[i]:
+                if ori_char.lower() == corrected_text[i]:
+                    # pass english upper char
+                    corrected_text = corrected_text[:i] + ori_char + corrected_text[i + 1:]
+                    continue
+                sub_details.append((ori_char, corrected_text[i], i, i + 1))
+        sub_details = sorted(sub_details, key=operator.itemgetter(2))
+        return corrected_text, sub_details
+
+    def init_prun_sim_filter(self):
+        checkpoint_file = "/media/sfy/Study/graduation/wenet/model/pytorch_model/wenetspeech/20220506_u2pp_conformer_exp/final.pt"
+        vocab_file = "/media/sfy/Study/graduation/wenet/model/pytorch_model/wenetspeech/20220506_u2pp_conformer_exp/units.txt"
+        pinyin_file = "/media/sfy/Study/graduation/PostProcess/pycorrector/dict/pinyin_dict.txt"
+        wiki_file = "/media/sfy/Study/graduation/PostProcess/ChinesePunctuationPredictor/data/cleanwikiseg.txt"
+        wiki_wc_file = "/media/sfy/Study/graduation/PostProcess/pycorrector/dict/wiki_wordcount.txt"
+
+        cossim_w2i_wc_file = "/media/sfy/Study/graduation/PostProcess/pycorrector/dict/cossim_w2i_wc.pkl"
+
+        if not os.path.exists(cossim_w2i_wc_file):
+            def get_wordcount(wc_file=wiki_wc_file):
+                wiki_wc_dict = {}
+                if not os.path.exists(wc_file):
+                    with open(wiki_file) as f:
+                        for sentence in tqdm(f.readlines()):
+                            words = sentence.strip().split()
+                            for word in words:
+                                word = word.strip()
+                                if len(word) >= 2:
+                                    if word in wiki_wc_dict:
+                                        wiki_wc_dict[word] += 1
+                                    else:
+                                        wiki_wc_dict[word] = 1
+
+                    with open(wc_file, 'w', encoding='utf-8')as f:
+                        for k, v in tqdm(wiki_wc_dict.items()):
+                            f.write("{}\t{}\n".format(k, str(v)))
+                else:
+                    with open(wc_file, 'r', encoding='utf-8')as f:
+                        for sentence in tqdm(f.readlines()):
+                            words = sentence.strip().split()
+                            wiki_wc_dict[words[0].strip()] = int(words[1].strip())
+
+                return wiki_wc_dict
+            self.wc_dict = get_wordcount(wiki_wc_file)
+
+            wenetspeech_checkpoint = torch.load(checkpoint_file)
+            vocab_embedding = wenetspeech_checkpoint["ctc.ctc_lo.weight"].numpy()
+            cos_sim = np.matmul(vocab_embedding, vocab_embedding.T)
+            norm = np.linalg.norm(vocab_embedding, axis=1).reshape([-1, 1])
+            self.cos_sim = (cos_sim / np.matmul(norm, norm.T) + 1.) / 2.
+
+            vocab = []
+            with open(vocab_file) as f:
+                for word in f.readlines():
+                    word = word.strip().split()[0]
+                    if word:
+                        vocab.append(word)
+            self.word_to_idx = {v: i for i, v in enumerate(vocab)}
+
+            self.save_pickle(file_name=cossim_w2i_wc_file, data=[self.cos_sim, self.word_to_idx, self.wc_dict])
+        else:
+            print("load pkl")
+            self.cos_sim, self.word_to_idx, self.wc_dict = self.load_pickle(cossim_w2i_wc_file)
+
+    def pinyin_edit_distance(self, word1: str, word2: str):
+        m = len(word1)
+        n = len(word2)
+        if (m == 0 and n == 0) or word1 == word2:
+            return 0
+        if m == 0 or n == 0:
+            return max(m, n)
+
+        tone1 = tone2 = 1
+        if word1[-1].isdigit():
+            m -= 1
+            tone1 = int(word1[-1])
+        if word2[-1].isdigit():
+            n -= 1
+            tone2 = int(word2[-1])
+        tone_dis = abs(tone1 - tone2)
+
+        dp = [[0] * (n + 1) for _ in range(m + 1)]
+        for i in range(1, m + 1):
+            dp[i][0] = i
+        for j in range(1, n + 1):
+            dp[0][j] = j
+
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                c1 = word1[i - 1]
+                c2 = word2[j - 1]
+                if c1 == c2:
+                    dp[i][j] = dp[i - 1][j - 1]
+                else:
+                    dp[i][j] = min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]) + 1
+        prun_dis = dp[m][n]
+        return prun_dis + tone_dis * 0.3
+
+    def pinyin_sim_filter(self, target, candidates, context, target_idx=0):
+        res_sim = []
+        for c in candidates.split():
+            if c not in self.word_to_idx or target not in self.word_to_idx or c == target:
+                continue
+
+            cur_cos_sim = self.cos_sim[self.word_to_idx[c]][self.word_to_idx[target]]
+
+            cur_cand_pinyin = lazy_pinyin(c, style=Style.TONE3)[0]
+            cur_target_pinyin = lazy_pinyin(target, style=Style.TONE3)[0]
+            # print(cur_cand_pinyin, cur_target_pinyin)
+            cur_pinyin_dis = self.pinyin_edit_distance(cur_cand_pinyin, cur_target_pinyin)
+            cur_pinyin_sim = 10.0 if cur_pinyin_dis < 1e-3 else 1. / cur_pinyin_dis
+
+            cur_ngram_sim = 0
+            for k in range(2, 5):
+                cur_word = c + context[target_idx + 1:target_idx + k]
+                if cur_word in self.wc_dict:
+                    cur_sim = np.log10(self.wc_dict[cur_word])
+                    cur_ngram_sim = max(cur_ngram_sim, cur_sim)
+                if target_idx - k >= 0:
+                    cur_word = context[target_idx - k:target_idx] + c
+                    if cur_word in self.wc_dict:
+                        cur_sim = np.log10(self.wc_dict[cur_word])
+                        cur_ngram_sim = max(cur_ngram_sim, cur_sim)
+            if cur_pinyin_sim > 0.6 and cur_ngram_sim > 1e-5:
+                res_sim.append([c, cur_cos_sim, cur_pinyin_sim, cur_ngram_sim])
+
+        res_sim.sort(key=lambda x: x[1] * x[2] * x[3], reverse=True)
+        # print(res_sim)
+
+        return res_sim[0][0] if res_sim and res_sim[0][3] > 1e-5 else target
+
+    def split_text_by_maxlen(self, text, maxlen=512):
+        """
+        文本切分为句子，以句子maxlen切分
+        :param text: str
+        :param maxlen: int, 最大长度
+        :return: list, (sentence, idx)
+        """
+        result = []
+        for i in range(0, len(text), maxlen):
+            result.append((text[i:i + maxlen], i))
+        return result
+
+    def macbert_correct_pinyin(self, text, threshold=0.9, verbose=True):
+        """
+        句子纠错
+        :param text: 句子文本
+        :param threshold: 阈值
+        :param verbose: 是否打印详细信息
+        :return: corrected_text, list[list], [error_word, correct_word, begin_pos, end_pos]
+        """
+        if not text:
+            return text, None
+
+        text_new = ''
+        details = []
+        # 长句切分为短句
+        blocks = self.split_text_by_maxlen(text, maxlen=128)
+        # print("block ", blocks)
+        block_texts = [block[0] for block in blocks]
+        inputs = self.tokenizer(block_texts, padding=True, return_tensors='pt').to(self.device)
+        with torch.no_grad():
+            outputs = self.model(**inputs)
+
+        for ids, (text, idx) in zip(outputs.logits, blocks):
+            decode_tokens_new = self.tokenizer.decode(torch.argmax(ids, dim=-1), skip_special_tokens=True).split(' ')
+            decode_tokens_old = self.tokenizer.decode(inputs['input_ids'][idx%128], skip_special_tokens=True).split(' ')
+            if len(decode_tokens_new) != len(decode_tokens_old):
+                continue
+            probs = torch.max(torch.softmax(ids, dim=-1), dim=-1)[0].cpu().numpy()
+            decode_tokens = ''
+            for i in range(len(decode_tokens_old)):
+                if probs[i + 1] >= threshold:
+                    decode_tokens += decode_tokens_new[i]
+
+                else:
+
+                    if decode_tokens_old[i] not in self.word_to_idx:
+                        decode_tokens += decode_tokens_old[i]
+                    else:
+                        values, indices = ids[i+1].topk(20, dim=-1, largest=True, sorted=True)
+                        tokens = self.tokenizer.decode(indices, skip_special_tokens=True)
+
+                        context = "".join(decode_tokens_new)
+                        res = self.pinyin_sim_filter(target=decode_tokens_old[i], candidates=tokens,
+                                                     context=context, target_idx=i)
+                        # print("correct res ", decode_tokens_old[i], res, )
+
+                        decode_tokens += res
+
+            corrected_text = decode_tokens[:len(text)]
+            corrected_text, sub_details = self.get_errors(corrected_text, text)
+            text_new += corrected_text
+            sub_details = [(i[0], i[1], idx + i[2], idx + i[3]) for i in sub_details]
+            details.extend(sub_details)
+
+
+        return text_new, details
+
+
 class BiLSTM(nn.Module):
     def __init__(self, input_dim, hidden_dim, output_dim,
                  num_layers, batch_size, device='cpu',
@@ -339,21 +579,11 @@ class BiLSTM(nn.Module):
         tag_scores = self.fc(lstm_out)
 #         tag_scores = F.softmax(tag_space, dim=-1)
         return tag_scores
-
-tag_punctuation = ['X', '，', '。', '！', '？', '、', '：']
-unknown_word = '<UNK>'
-padding_word = '<PAD>'
-
-init_w2v_path = '/media/sfy/Study/graduation/PostProcess/model/sgns.wiki.word.bz2'
-vocab_file = "/media/sfy/Study/graduation/PostProcess/ChinesePunctuationPredictor/model/vocab.txt"
-emb_model_path = "/media/sfy/Study/graduation/PostProcess/ChinesePunctuationPredictor/model/w2v_embedding.npy"
-lstm_model_path = "/media/sfy/Study/graduation/PostProcess/ChinesePunctuationPredictor/model/wiki_200w_1/bilstm_20_32.final.pt"
-lstm_model_path = "/media/sfy/Study/graduation/PostProcess/ChinesePunctuationPredictor/model/wiki_158w_infrequent/bilstm_2_32.final.pt"
-
 class PunctuationAppender:
     def __init__(self):
         self.init_vocab()
         self.init_model()
+        self.cache_res = []
 
     def init_vocab(self):
         self.vocab = []
@@ -534,9 +764,16 @@ class Asr_Demo(QtWidgets.QMainWindow, Ui_MainWindow):
         self.photo_flag = 0
         self.start_time = 0
         self.cur_state = 0
+        self.subtitle = ""
+        self.subtitle_cache = []
+        self.last_pos = 0
+        self.remain_times = 0
+        self.max_subtitle_len = 23
+        self.subtitle_color = (255, 20, 20)
 
         self.asr = asr_grpc_client()
         self.punc_pre = PunctuationAppender()
+        self.corrector = MacBertCorrector()
 
     def init(self):
 
@@ -588,6 +825,24 @@ class Asr_Demo(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.label.setScaledContents(True)  # 图片自适应
 
+    def paint_subtitle(self, img, text, textColor=(0, 255, 0)):
+        h, w = img.shape[:2]
+        sub_pos_left = int(0.05 * w)
+        sub_pos_top = int(0.85 * h)
+        sub_size = int(0.07 * h)
+
+        display_text = text[1:] if text and text[0] in tag_punctuation else text
+
+        if (isinstance(img, np.ndarray)):
+            img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+        draw = ImageDraw.Draw(img)
+
+        font = "AaMingYueJiuLinTian.ttf"
+        font = "HanYiYanKaiW-2.ttf"
+        fontStyle = ImageFont.truetype(font, sub_size, encoding="utf-8")
+        draw.text((sub_pos_left, sub_pos_top), display_text, textColor, font=fontStyle)
+        return cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
+
     def open_camera(self, is_record=False):
         self.close()
         self.cur_state = 1
@@ -599,35 +854,13 @@ class Asr_Demo(QtWidgets.QMainWindow, Ui_MainWindow):
         self.show_camera_image()
 
     def show_camera_image(self):
-        def paint_chinese_opencv( img, text, left, top, textColor=(0, 255, 0), textSize=20):
-            if (isinstance(img, np.ndarray)):  # 判断是否OpenCV图片类型
-                img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-            # 创建一个可以在给定图像上绘图的对象
-            draw = ImageDraw.Draw(img)
-            # 字体的格式
-            font = "AaMingYueJiuLinTian.ttf"
-            fontStyle = ImageFont.truetype(font, textSize, encoding="utf-8")
-            # 绘制文本
-            draw.text((left, top), text, textColor, font=fontStyle)
-            # 转换回OpenCV格式
-            return cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
 
         flag, self.image = self.cap.read()  # 从视频流中读取图片
         image_raw = cv2.resize(self.image, (640, 480))
         image_raw = cv2.flip(image_raw, 1)
-
         h, w  = image_raw.shape[:2]
-
-        # display_words_size = 10
-        # subtitle = self.asr.asr_result
-        # cur_start_idx = -len(subtitle)%display_words_size
-        # sub_pos_left = int(0.05 * w)
-        # sub_pos_top = int(0.85 * h)
-        # sub_size = int(0.07 * h)
-        # image_show = self.paint_chinese_opencv(image_show, subtitle[cur_start_idx:], left=sub_pos_left, top=sub_pos_top,
-        #                                        textColor=(200, 20, 20), textSize=sub_size)
-
-        image_show = cv2.cvtColor(image_raw, cv2.COLOR_BGR2RGB)
+        image_show = self.paint_subtitle(image_raw, self.subtitle, textColor=self.subtitle_color)
+        image_show = cv2.cvtColor(image_show, cv2.COLOR_BGR2RGB)
         self.showImage = QtGui.QImage(image_show.data, w, h, QImage.Format_RGB888)
         self.label.setPixmap(QPixmap.fromImage(self.showImage))
         # self.label.setScaledContents(True) #图片自适应
@@ -653,15 +886,6 @@ class Asr_Demo(QtWidgets.QMainWindow, Ui_MainWindow):
             # my_clip.audio.write_audiofile(audio_file)
             my_clip.audio.write_audiofile(audio_file, fps=16000, ffmpeg_params=["-ac","1"])
 
-        # self.v_wf = wave.open(audio_file, 'rb')
-        # self.v_p = pyaudio.PyAudio()
-        # self.v_stream = self.v_p.open(format=self.v_p.get_format_from_width(self.v_wf.getsampwidth()),
-        #                           channels=self.v_wf.getnchannels(),
-        #                           rate=self.v_wf.getframerate(),
-        #                           output=True)
-        # print(self.v_wf.getnchannels(), self.v_wf.getframerate())
-        #
-        # self.asr.start_recognize(wav_file=audio_file, recognize_type=1)
         self.open_audio(audio_src=1, from_file=audio_file)
 
         self.interval = 50
@@ -671,19 +895,12 @@ class Asr_Demo(QtWidgets.QMainWindow, Ui_MainWindow):
     def show_video(self):
         flag, self.image = self.cap_video.read()
         image_show = cv2.resize(self.image, (1280, 720))
-        width, height = image_show.shape[:2]
-        image_show = cv2.cvtColor(image_show, cv2.COLOR_BGR2RGB)
+        h, w = image_show.shape[:2]
         # image_show = cv2.flip(image_show, 1)
-        self.showImage = QtGui.QImage(image_show.data, height, width, QImage.Format_RGB888)
+        image_show = self.paint_subtitle(image_show, self.subtitle, textColor=self.subtitle_color)
+        image_show = cv2.cvtColor(image_show, cv2.COLOR_BGR2RGB)
+        self.showImage = QtGui.QImage(image_show.data, w, h, QImage.Format_RGB888)
         self.label.setPixmap(QPixmap.fromImage(self.showImage))
-
-        # text = self.asr.asr_result
-        # self.textBrowser.setPlainText(text)
-        #
-        # CHUNK = int(self.v_wf.getframerate() * self.interval / 1000.)
-        # data = self.v_wf.readframes(CHUNK)
-        # if data != '':
-        #     self.v_stream.write(data)
 
     # 0:choose audio file    1:use user define audio file    2:from sound
     def open_audio(self, audio_src=0, from_file=None, is_record=False):
@@ -729,9 +946,7 @@ class Asr_Demo(QtWidgets.QMainWindow, Ui_MainWindow):
         self.asr_result_timer.start(self.asr_result_interval)
         self.show_asr_result()
 
-
     def show_audio(self):
-
         CHUNK = int(self.wf.getframerate() * self.audio_interval*1. / 1000.)
         data = self.wf.readframes(CHUNK)
         if data != '':
@@ -750,12 +965,30 @@ class Asr_Demo(QtWidgets.QMainWindow, Ui_MainWindow):
         # print(self.asr.asr_seg_wordieces)
         # print(self.asr.final_seg_count, len(self.asr.asr_seg_result), len(self.asr.asr_seg_wordieces))
         text = self.punc_pre.append_punc_v1(asr_seg_result, asr_seg_wordieces, final_seg_count)
+        # text,_ = self.corrector.macbert_correct_pinyin(text)
+        # print("text ", text)
 
-        # if text:
-        #     sys.stdout.write('\r' + text)
-        #     sys.stdout.flush()
-        self.textBrowser.setPlainText(text)
+        if self.last_pos < len(text) and text[self.last_pos] in tag_punctuation:
+            self.subtitle_cache[-1] += text[self.last_pos]
+            self.last_pos += 1
+        cur_subtitle = text[self.last_pos:]
+        while len(cur_subtitle) > self.max_subtitle_len or self.remain_times*self.asr_result_interval>1400:
+            cur_len = min(len(cur_subtitle), self.max_subtitle_len)
+            self.subtitle_cache.append(text[self.last_pos:self.last_pos+cur_len])
+            self.last_pos += cur_len
+            cur_subtitle = text[self.last_pos:]
+            self.remain_times = 0
+
+        self.remain_times = self.remain_times+1 if self.subtitle == cur_subtitle else 0
+        self.subtitle = cur_subtitle
+
+
+        display_text = "\n".join(self.subtitle_cache[-25:] + [cur_subtitle])
+        self.textBrowser.setPlainText(display_text)
         # print("punc time ", time.time() - self.start_time)
+        # if display_text:
+        #     sys.stdout.write('\r' + display_text)
+        #     sys.stdout.flush()
 
 
 
@@ -819,6 +1052,12 @@ class Asr_Demo(QtWidgets.QMainWindow, Ui_MainWindow):
         self.start_time = 0
         self.cur_state = 0
 
+        self.subtitle = ""
+        self.subtitle_cache = []
+        self.last_pos = 0
+        self.remain_times = 0
+
+
     def closeEvent(self, event):
         self.close()
         print("Force close!")
@@ -855,7 +1094,7 @@ if __name__ == '__main__':
     demo.show()
     sys.exit(app.exec_())
 
-# s =  "我以与父亲不相见已二年余了我最不能忘记的是他的背影那年冬天祖母死了父亲的差使也交谢了正是祸不单行的日子我从北京到徐州打算跟着父亲奔丧回家到徐州见着父亲看见满院狼藉的东西又想起祖母不禁簌簌地流下眼泪父亲说事已如此不易难过好在天无绝人之路回家变卖点质父亲还了亏空又借钱办了丧事这些日子家中光景很是惨淡一半为了丧事一半为了父亲赋闲丧事完毕父亲要到南京谋事我也要回北京念书我们便同行到南京时有朋友约去逛街勾留了一日第二日上午"
+# s =  "我以与父亲不相见已二年余了我最不能忘记的是他的背影"
 # pa = PunctuationAppender()
 # res = pa.append_punc_raw(s)
 # print(res)

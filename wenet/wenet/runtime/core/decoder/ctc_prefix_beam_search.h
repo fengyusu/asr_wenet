@@ -119,6 +119,7 @@ class CtcPrefixBeamSearch : public SearchInterface {
   const std::vector<float>& Likelihood() const override { return likelihood_; }
   const std::vector<std::vector<int>>& Times() const override { return times_; }
 
+  const std::vector<float>& LmScore() const override { std::vector<float> empty; return empty; }
  private:
   int abs_time_step_ = 0;
 

@@ -1,4 +1,4 @@
-FROM asr_wenet_raw:latest
+FROM ubuntu_build:latest
 MAINTAINER <fengyu@stu.pku.edu.cn>
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # RUN export GIT_TRACE_PACKET=1
 # RUN export GIT_TRACE=1
 # RUN export GIT_CURL_VERBOSE=1
-# RUN git clone https://github.com/fengyusu/asr_wenet.git /home/asr_wenet
+RUN git clone https://github.com/fengyusu/asr_wenet.git /home/asr_wenet
 
 # ARG model=20210618_u2pp_conformer_libtorch.tar.gz
 # RUN wget -P /home https://wenet-1256283475.cos.ap-shanghai.myqcloud.com/models/aishell2/$model

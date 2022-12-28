@@ -22,14 +22,81 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <map>
+#include <fstream>
+#include <cmath>
+#include <numeric>
 
 #include "onnxruntime_cxx_api.h"  // NOLINT
 
 #include "decoder/asr_model.h"
 #include "utils/log.h"
 #include "utils/utils.h"
+#include "fst/symbol-table.h"
+
+#include "lm/model.hh"
+#include "lm/config.hh"
+#include "util/tokenize_piece.hh"
+#include "util/string_piece.hh"
+#include "util/string_stream.hh"
+using namespace lm::ngram;
+
 
 namespace wenet {
+
+struct LmScore{
+  int raw_idx = 0;
+  float ngram_score = -kFloatMax;
+  float bert_score = -kFloatMax;
+  std::vector<float> bert_score_vec;
+  std::vector<std::string> raw_text;
+  std::vector<int> unconfident_ids;
+
+  float get_ngram_score() const { return ngram_score; }
+  float get_bert_score() const { return bert_score; }
+  float get_score() const { return bert_score; }
+};
+
+class OnnxLmModel {
+ public:
+  // Note: Do not call the InitEngineThreads function more than once.
+  static void InitEngineThreads(int num_threads = 1);
+ public:
+  OnnxLmModel() = default;
+//  OnnxLmModel(const OnnxLmModel& other);
+  void Read(const std::string& model_dir, bool use_quant_model);
+
+  void UpdateLmScore(const std::vector<std::pair<std::string, std::vector<int>>>& texts, std::vector<float>& lm_score);
+
+  void ForwardDetectFunc(std::vector<LmScore>& lm_scores, int filter_num);
+
+  void GetInputOutputInfo(const std::shared_ptr<Ort::Session>& session,
+                          std::vector<const char*>* in_names,
+                          std::vector<const char*>* out_names);
+
+ private:
+  int unk_id_ = 100;
+  int cls_id_ = 101;
+  int sep_id_ = 102;
+  int pad_id_ = 0;
+
+  std::shared_ptr<Model> klm_model_ = nullptr;
+
+
+  std::map<string, int64_t> lm_vocab_table_;
+  // sessions
+  // NOTE(Mddct): The Env holds the logging state used by all other objects.
+  //  One Env must be created before using any other Onnxruntime functionality.
+//  static Ort::Env lm_env_;  // shared environment across threads.
+//  static Ort::SessionOptions lm_session_options_;
+  std::shared_ptr<Ort::Session> lm_session_ = nullptr;
+
+  // node names
+  std::vector<const char*> lm_in_names_, lm_out_names_;
+
+
+};
+
 
 class OnnxAsrModel : public AsrModel {
  public:
@@ -39,7 +106,7 @@ class OnnxAsrModel : public AsrModel {
  public:
   OnnxAsrModel() = default;
   OnnxAsrModel(const OnnxAsrModel& other);
-  void Read(const std::string& model_dir);
+  void Read(const std::string& model_dir, bool use_quant_model);
   void Reset() override;
   void AttentionRescoring(const std::vector<std::vector<int>>& hyps,
                           float reverse_weight,
@@ -65,8 +132,8 @@ class OnnxAsrModel : public AsrModel {
   // sessions
   // NOTE(Mddct): The Env holds the logging state used by all other objects.
   //  One Env must be created before using any other Onnxruntime functionality.
-  static Ort::Env env_;  // shared environment across threads.
-  static Ort::SessionOptions session_options_;
+//  static Ort::Env env_;  // shared environment across threads.
+//  static Ort::SessionOptions session_options_;
   std::shared_ptr<Ort::Session> encoder_session_ = nullptr;
   std::shared_ptr<Ort::Session> rescore_session_ = nullptr;
   std::shared_ptr<Ort::Session> ctc_session_ = nullptr;
@@ -88,6 +155,8 @@ class OnnxAsrModel : public AsrModel {
   std::vector<float> att_cache_;
   std::vector<float> cnn_cache_;
 };
+
+
 
 }  // namespace wenet
 

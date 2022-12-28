@@ -148,7 +148,9 @@ def reverse_pad_list(ys_pad: torch.Tensor,
 
     Examples:
         >>> x
-        tensor([[1, 2, 3, 4], [5, 6, 7, 0], [8, 9, 0, 0]])
+        tensor([[1, 2, 3, 4],
+                [5, 6, 7, 0],
+                [8, 9, 0, 0]])
         >>> pad_list(x, 0)
         tensor([[4, 3, 2, 1],
                 [7, 6, 5, 0],

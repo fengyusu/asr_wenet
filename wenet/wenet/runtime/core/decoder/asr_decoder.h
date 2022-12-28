@@ -29,6 +29,7 @@
 #include "decoder/context_graph.h"
 #include "decoder/ctc_endpoint.h"
 #include "decoder/ctc_prefix_beam_search.h"
+#include "decoder/ctc_lm_prefix_beam_search.h"
 #include "decoder/ctc_wfst_beam_search.h"
 #include "decoder/search_interface.h"
 #include "frontend/feature_pipeline.h"
@@ -58,6 +59,7 @@ struct DecodeOptions {
   CtcEndpointConfig ctc_endpoint_config;
   CtcPrefixBeamSearchOptions ctc_prefix_search_opts;
   CtcWfstBeamSearchOptions ctc_wfst_search_opts;
+  CtcLmPrefixBeamSearchOptions ctc_lm_prefix_search_opts;
 };
 
 struct WordPiece {
@@ -71,6 +73,8 @@ struct WordPiece {
 
 struct DecodeResult {
   float score = -kFloatMax;
+  float lm_score = -kFloatMax;
+  float total_score = -kFloatMax;
   std::string sentence;
   std::vector<WordPiece> word_pieces;
 
@@ -95,6 +99,7 @@ struct DecodeResource {
   std::shared_ptr<fst::SymbolTable> unit_table = nullptr;
   std::shared_ptr<ContextGraph> context_graph = nullptr;
   std::shared_ptr<PostProcessor> post_processor = nullptr;
+  std::shared_ptr<OnnxLmModel> lm_model = nullptr;
 };
 
 // Torch ASR decoder

@@ -2,3 +2,4 @@ build/
 fc_base/*
 fc_base/*
 !fc_base/grpc-src.tar.gz
+!fc_base/kenlm.tar.xz

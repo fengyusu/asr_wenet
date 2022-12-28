@@ -60,6 +60,7 @@ class Ui_MainWindow(QMainWindow):
     # vieo_gui.show()
     # sys.exit(app.exec_())
 
-a = "1234"
-for i,c in enumerate(a):
-    print(i,c)
+
+
+
+

@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
 project(wenet VERSION 0.1)
 
-option(CXX11_ABI "whether to use CXX11_ABI libtorch" OFF)
+option(CXX11_ABI "whether to use CXX11_ABI libtorch" ON)
 option(GRAPH_TOOLS "whether to build TLG graph tools" OFF)
-option(BUILD_TESTING "whether to build unit test" ON)
+option(BUILD_TESTING "whether to build unit test" OFF)
 
 option(GRPC "whether to build with gRPC" OFF)
 # TODO(Binbin Zhang): Change websocket to OFF since it depends on boost
@@ -45,12 +45,17 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/kaldi
 )
 
+include(kenlm)
+
+
+
 # Build all libraries
 add_subdirectory(utils)
 add_subdirectory(frontend)
 add_subdirectory(post_processor)
 add_subdirectory(kaldi)  # kaldi: wfst based decoder
 add_subdirectory(decoder)
+
 add_subdirectory(api)
 
 # Optionally, you can build with websocket
@@ -73,3 +78,5 @@ if(BUILD_TESTING)
   include(gtest)
   add_subdirectory(test)
 endif()
+
+

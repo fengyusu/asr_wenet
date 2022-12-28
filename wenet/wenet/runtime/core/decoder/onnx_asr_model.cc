@@ -26,12 +26,307 @@
 
 namespace wenet {
 
-Ort::Env OnnxAsrModel::env_ = Ort::Env(ORT_LOGGING_LEVEL_WARNING, "");
-Ort::SessionOptions OnnxAsrModel::session_options_ = Ort::SessionOptions();
+//Ort::Env OnnxAsrModel::env_ = Ort::Env(ORT_LOGGING_LEVEL_WARNING, "");
+//Ort::SessionOptions OnnxAsrModel::session_options_ = Ort::SessionOptions();
+//
+//Ort::Env OnnxLmModel::lm_env_ = Ort::Env(ORT_LOGGING_LEVEL_WARNING, "");
+//Ort::SessionOptions OnnxLmModel::lm_session_options_ = Ort::SessionOptions();
+
+Ort::Env global_env = Ort::Env(ORT_LOGGING_LEVEL_WARNING, "");
+Ort::SessionOptions global_session_options = Ort::SessionOptions();
+
+void OnnxLmModel::InitEngineThreads(int num_threads) {
+  global_session_options.SetIntraOpNumThreads(num_threads);
+  global_session_options.SetInterOpNumThreads(num_threads);
+}
+
+void OnnxLmModel::Read(const std::string& model_dir, bool use_quant_model){
+    std::string lm_onnx_path = use_quant_model ? (model_dir + "/lm.quant.onnx") : (model_dir + "/lm.onnx");
+    lm_session_ = std::make_shared<Ort::Session>(global_env, lm_onnx_path.c_str(), global_session_options);
+
+    std::string lm_vocab_path = model_dir + "/vocab.txt";
+    std::ifstream ifs;
+    ifs.open(lm_vocab_path);
+    string str;
+    int64_t idx = 0;
+    while (getline(ifs, str))
+    {
+        if (str.empty()){
+            continue;
+        }
+        str.erase(0,str.find_first_not_of(" "));
+        str.erase(str.find_last_not_of(" ") + 1);
+        lm_vocab_table_[str] = idx;
+        idx++;
+    }
+    ifs.close();
+
+    LOG(INFO) << "Onnx Lm:";
+    GetInputOutputInfo(lm_session_, &lm_in_names_, &lm_out_names_);
+
+    std::string klm_path = model_dir + "/ngram_model.klm";
+//    char *path = "/home/sfy/study/package/kenlm/test/people_chars_lm.klm";
+    Config config;
+    config.load_method = util::READ;
+    klm_model_ = std::make_shared<Model>(klm_path.c_str(), config);
+
+}
+
+void OnnxLmModel::GetInputOutputInfo(
+    const std::shared_ptr<Ort::Session>& session,
+    std::vector<const char*>* in_names, std::vector<const char*>* out_names) {
+  Ort::AllocatorWithDefaultOptions allocator;
+  // Input info
+  int num_nodes = session->GetInputCount();
+  in_names->resize(num_nodes);
+  for (int i = 0; i < num_nodes; ++i) {
+    char* name = session->GetInputName(i, allocator);
+    Ort::TypeInfo type_info = session->GetInputTypeInfo(i);
+    auto tensor_info = type_info.GetTensorTypeAndShapeInfo();
+    ONNXTensorElementDataType type = tensor_info.GetElementType();
+    std::vector<int64_t> node_dims = tensor_info.GetShape();
+    std::stringstream shape;
+    for (auto j : node_dims) {
+      shape << j;
+      shape << " ";
+    }
+    LOG(INFO) << "\tInput " << i << " : name=" << name << " type=" << type
+              << " dims=" << shape.str();
+    (*in_names)[i] = name;
+  }
+  // Output info
+  num_nodes = session->GetOutputCount();
+  out_names->resize(num_nodes);
+  for (int i = 0; i < num_nodes; ++i) {
+    char* name = session->GetOutputName(i, allocator);
+    Ort::TypeInfo type_info = session->GetOutputTypeInfo(i);
+    auto tensor_info = type_info.GetTensorTypeAndShapeInfo();
+    ONNXTensorElementDataType type = tensor_info.GetElementType();
+    std::vector<int64_t> node_dims = tensor_info.GetShape();
+    std::stringstream shape;
+    for (auto j : node_dims) {
+      shape << j;
+      shape << " ";
+    }
+    LOG(INFO) << "\tOutput " << i << " : name=" << name << " type=" << type
+              << " dims=" << shape.str();
+    (*out_names)[i] = name;
+  }
+}
+
+void OnnxLmModel::ForwardDetectFunc(std::vector<LmScore>& lm_scores, int filter_num){
+    std::vector<int64_t> input_ids;
+    std::vector<int64_t> token_type_ids;
+    std::vector<int64_t> attention_mask;
+
+    std::vector<std::vector<float>> detect_prob;
+    std::vector<std::vector<float>> bert_logits;
+
+    int batch_size = std::min(static_cast<int>(lm_scores.size()), filter_num);
+        int max_len = 0;
+        for(int i=0; i < batch_size; i++){
+            max_len = max_len < lm_scores[i].raw_text.size() ? lm_scores[i].raw_text.size() : max_len;
+        }
+        std::cout << "max_len " << max_len << "  batch_size " << batch_size << std::endl;
+        if(batch_size == 0 || max_len == 0){
+            return;
+        }
+
+        for (int i=0; i < batch_size; i++){
+            std::vector<int64_t> cur_input_ids;
+            std::vector<int64_t> cur_token_type_id(max_len+2, 0);
+            std::vector<int64_t> cur_attention_mask;
+
+            cur_input_ids.emplace_back(cls_id_);
+
+            cur_attention_mask.emplace_back(1);
+            for (int j=0; j < max_len+1; j++){
+                if (j < lm_scores[i].raw_text.size()){
+                    std::string c(lm_scores[i].raw_text[j]);
+                    cur_input_ids.emplace_back(lm_vocab_table_.count(c) == 0 ? unk_id_ : lm_vocab_table_[c] );
+                    cur_attention_mask.emplace_back(1);
+                }
+                else if (j == lm_scores[i].raw_text.size()) {
+                    cur_input_ids.emplace_back(sep_id_);
+                    cur_attention_mask.emplace_back(1);
+                }
+                else {
+                    cur_input_ids.emplace_back(pad_id_);
+                    cur_attention_mask.emplace_back(0);
+                }
+
+            }
+
+            input_ids.insert(input_ids.end(), cur_input_ids.begin(), cur_input_ids.end());
+            token_type_ids.insert(token_type_ids.end(), cur_token_type_id.begin(), cur_token_type_id.end());
+            attention_mask.insert(attention_mask.end(), cur_attention_mask.begin(), cur_attention_mask.end());
+        }
+
+        Ort::MemoryInfo memory_info = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeCPU);
+
+        const int64_t input_ids_shape[2] = {batch_size, max_len+2};
+        Ort::Value input_ids_ort = Ort::Value::CreateTensor<int64_t>(memory_info, input_ids.data(), input_ids.size(), input_ids_shape, 2);
+
+        Ort::Value token_type_ids_ort = Ort::Value::CreateTensor<int64_t>(memory_info, token_type_ids.data(), token_type_ids.size(), input_ids_shape, 2);
+
+        Ort::Value attention_mask_ort = Ort::Value::CreateTensor<int64_t>(memory_info, attention_mask.data(), attention_mask.size(), input_ids_shape, 2);
+
+        std::vector<Ort::Value> ort_inputs;
+        ort_inputs.emplace_back(std::move(input_ids_ort));
+        ort_inputs.emplace_back(std::move(token_type_ids_ort));
+        ort_inputs.emplace_back(std::move(attention_mask_ort));
+
+    std::vector<Ort::Value> lm_ort_outputs = lm_session_->Run(
+      Ort::RunOptions{nullptr},
+      lm_in_names_.data(), ort_inputs.data(), ort_inputs.size(),
+      lm_out_names_.data(), lm_out_names_.size());
+
+      float* detect_prob_data = lm_ort_outputs[0].GetTensorMutableData<float>();
+      auto type_info = lm_ort_outputs[0].GetTensorTypeAndShapeInfo();
+
+
+    for (int i=0; i < batch_size; i++){
+        lm_scores[i].bert_score_vec.resize(max_len);
+        memcpy(lm_scores[i].bert_score_vec.data(), detect_prob_data + 1 + i * (max_len+2), sizeof(float) * max_len);
+
+//        std::cout << "debug idx " << i << " ";
+//            for(auto lm_score: lm_scores[i].bert_score_vec) {
+//                std::cout << lm_score << " ";
+//            }
+//            std::cout << std::endl;
+    }
+
+
+
+//  output_scores->resize(batch_size);
+//  for (int i = 0; i < batch_size; i++) {
+//    (*output_scores)[i].resize(max_len);
+//    memcpy((*output_scores)[i].data(), detect_prob_data + 1 + i * (max_len+2), sizeof(float) * max_len);
+//  }
+
+}
+
+
+static bool LmNgramScoreCompare( const LmScore& a, const LmScore& b) {
+  return a.get_ngram_score() > b.get_ngram_score();
+}
+
+static bool LmBertScoreCompare( const LmScore& a, const LmScore& b) {
+  return a.get_bert_score() > b.get_bert_score();
+}
+
+static bool LmScoreCompare( const LmScore& a, const LmScore& b) {
+  return a.get_score() > b.get_score();
+}
+
+static bool RawIdxCompare( const LmScore& a, const LmScore& b) {
+  return a.raw_idx < b.raw_idx;
+}
+
+void OnnxLmModel::UpdateLmScore(const std::vector<std::pair<std::string, std::vector<int>>>& texts,
+                                std::vector<float>& lm_score){
+    State state, out_state;
+    lm::FullScoreReturn ret;
+
+    bool use_unconfident_ids = false;
+    std::vector<float> ngram_scores;
+    std::vector<std::vector<std::string>> raw_texts;
+
+    std::vector<LmScore> combine_lm_scores;
+
+    for (size_t i = 0; i < texts.size(); i++) {
+        const string text = texts[i].first;
+        const std::vector<int> unconfident_ids = texts[i].second;
+
+        LmScore cur_lm_score;
+        cur_lm_score.raw_idx = i;
+
+        state = klm_model_->BeginSentenceState();
+        float cur_ngram_score = 0;
+        int cur_unconfident_idx = 0;
+        int unconfident_ids_size = use_unconfident_ids ? unconfident_ids.size() : text.length();
+
+        std::vector<std::string> cur_raw_text ;
+
+        int cur_idx = 0;
+        for (util::TokenIter<util::SingleCharacter, true> it(text, ' ') ; it; ++it, ++cur_idx) {
+            lm::WordIndex vocab = klm_model_->GetVocabulary().Index(*it);
+            ret = klm_model_->FullScore(state, vocab, out_state);
+            state = out_state;
+            if (!use_unconfident_ids || (cur_unconfident_idx < unconfident_ids_size && cur_idx == unconfident_ids[cur_unconfident_idx])){
+                cur_ngram_score += ret.prob;
+                cur_unconfident_idx ++;
+            }
+
+            cur_raw_text.emplace_back(it->as_string());
+        }
+        cur_ngram_score = (unconfident_ids_size > 0) ? (cur_ngram_score / unconfident_ids_size) : 0;
+
+        ngram_scores.emplace_back(cur_ngram_score);
+        raw_texts.emplace_back(cur_raw_text);
+
+        cur_lm_score.ngram_score = cur_ngram_score;
+        cur_lm_score.raw_text = cur_raw_text;
+        cur_lm_score.unconfident_ids = unconfident_ids;
+        combine_lm_scores.emplace_back(cur_lm_score);
+
+    }
+
+    int ngram_filter_num = 10;
+    std::nth_element(combine_lm_scores.begin(), combine_lm_scores.begin() + ngram_filter_num, combine_lm_scores.end(), LmNgramScoreCompare);
+    ForwardDetectFunc(combine_lm_scores, ngram_filter_num);
+
+    for (size_t i = 0; i < texts.size(); i++) {
+
+//            std::cout << "debug after  idx " << i << " ";
+//            for(auto lm_score: combine_lm_scores[i].bert_score_vec) {
+//                std::cout << lm_score << " ";
+//            }
+//            std::cout << std::endl;
+
+        if (i < ngram_filter_num){
+            int cur_text_len = combine_lm_scores[i].raw_text.size();
+            double sum = std::accumulate(std::begin(combine_lm_scores[i].bert_score_vec), std::begin(combine_lm_scores[i].bert_score_vec)+cur_text_len, 0.0);
+            double mean =  sum / cur_text_len;
+            combine_lm_scores[i].bert_score = log(1 - mean);
+        }
+        else{
+            combine_lm_scores[i].bert_score = -kFloatMax;
+        }
+    }
+
+    std::sort(combine_lm_scores.begin(), combine_lm_scores.end(), RawIdxCompare);
+    lm_score.clear();
+    for (size_t i = 0; i < texts.size(); i++) {
+        lm_score.emplace_back(combine_lm_scores[i].get_score());
+    }
+
+    std::sort(combine_lm_scores.begin(), combine_lm_scores.end(), LmScoreCompare);
+        for (size_t i = 0; i < combine_lm_scores.size(); i++) {
+        int raw_idx = combine_lm_scores[i].raw_idx ;
+        std::cout << raw_idx << " " << texts[raw_idx].first<<" : "<<combine_lm_scores[i].get_ngram_score()
+        << "  " << combine_lm_scores[i].get_bert_score() << "  " << combine_lm_scores[i].get_score()
+        << "  " << raw_texts[i].size() << "     ";
+        if (combine_lm_scores[i].bert_score_vec.size() > 0){
+            for (int j = 0; j < combine_lm_scores[i].unconfident_ids.size(); j++){
+                int unconfident_id = combine_lm_scores[i].unconfident_ids[j];
+                std::cout<< combine_lm_scores[i].raw_text[unconfident_id] <<
+                " " << combine_lm_scores[i].bert_score_vec[unconfident_id] << "  ";
+            }
+        }
+        std::cout << std::endl;
+    }
+
+
+}
+
+
+
+
 
 void OnnxAsrModel::InitEngineThreads(int num_threads) {
-  session_options_.SetIntraOpNumThreads(num_threads);
-  session_options_.SetInterOpNumThreads(num_threads);
+  global_session_options.SetIntraOpNumThreads(num_threads);
+  global_session_options.SetInterOpNumThreads(num_threads);
 }
 
 void OnnxAsrModel::GetInputOutputInfo(
@@ -76,27 +371,40 @@ void OnnxAsrModel::GetInputOutputInfo(
   }
 }
 
-void OnnxAsrModel::Read(const std::string& model_dir) {
-  std::string encoder_onnx_path = model_dir + "/encoder.onnx";
-  std::string rescore_onnx_path = model_dir + "/decoder.onnx";
-  std::string ctc_onnx_path = model_dir + "/ctc.onnx";
+void OnnxAsrModel::Read(const std::string& model_dir, bool use_quant_model) {
+
+    std::string encoder_onnx_path;
+      std::string rescore_onnx_path;
+      std::string ctc_onnx_path;
+    if (use_quant_model){
+    LOG(INFO) << "Use Quant Onnx Model !";
+      encoder_onnx_path = model_dir + "/encoder.quant.onnx";
+      rescore_onnx_path = model_dir + "/decoder.quant.onnx";
+      ctc_onnx_path = model_dir + "/ctc.quant.onnx";
+    }
+    else{
+      encoder_onnx_path = model_dir + "/encoder.onnx";
+      rescore_onnx_path = model_dir + "/decoder.onnx";
+      ctc_onnx_path = model_dir + "/ctc.onnx";
+    }
+
 
   // 1. Load sessions
   try {
 #ifdef _MSC_VER
     encoder_session_ = std::make_shared<Ort::Session>(
-        env_, ToWString(encoder_onnx_path).c_str(), session_options_);
+        global_env, ToWString(encoder_onnx_path).c_str(), global_session_options);
     rescore_session_ = std::make_shared<Ort::Session>(
-        env_, ToWString(rescore_onnx_path).c_str(), session_options_);
+        global_env, ToWString(rescore_onnx_path).c_str(), global_session_options);
     ctc_session_ = std::make_shared<Ort::Session>(
-        env_, ToWString(ctc_onnx_path).c_str(), session_options_);
+        global_env, ToWString(ctc_onnx_path).c_str(), global_session_options);
 #else
     encoder_session_ = std::make_shared<Ort::Session>(
-        env_, encoder_onnx_path.c_str(), session_options_);
+        global_env, encoder_onnx_path.c_str(), global_session_options);
     rescore_session_ = std::make_shared<Ort::Session>(
-        env_, rescore_onnx_path.c_str(), session_options_);
-    ctc_session_ = std::make_shared<Ort::Session>(env_, ctc_onnx_path.c_str(),
-                                                  session_options_);
+        global_env, rescore_onnx_path.c_str(), global_session_options);
+    ctc_session_ = std::make_shared<Ort::Session>(global_env, ctc_onnx_path.c_str(),
+                                                  global_session_options);
 #endif
   } catch (std::exception const& e) {
     LOG(ERROR) << "error when load onnx model: " << e.what();

@@ -41,6 +41,8 @@ class SearchInterface {
   virtual const std::vector<float>& Likelihood() const = 0;
   // N-best timestamp
   virtual const std::vector<std::vector<int>>& Times() const = 0;
+
+  virtual const std::vector<float>& LmScore() const = 0;
 };
 
 }  // namespace wenet

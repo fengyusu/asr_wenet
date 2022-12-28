@@ -7,6 +7,7 @@
 import sys
 import json
 import ast
+import string
 import pyaudio
 import wave
 from tqdm import tqdm
@@ -39,6 +40,28 @@ import wenet_pb2_grpc as pb2_grpc
 import time
 from concurrent import futures
 
+import logging
+import os.path
+import sys
+import operator
+import multiprocessing
+import gensim
+import jieba
+import torch
+from torch.utils.data import *
+import gc
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+import torch.autograd
+
+from pycorrector import config
+# from pycorrector.utils.tokenizer import split_text_by_maxlen
+from pypinyin import *
+import pickle
+from loguru import logger
+from transformers import BertTokenizerFast, BertForMaskedLM
+
 from pycorrector.macbert.macbert_corrector import MacBertCorrector
 from pycorrector.ernie_csc.ernie_csc_corrector import ErnieCSCCorrector
 
@@ -51,223 +74,6 @@ wav_file_60s_sep = "/media/sfy/Study/graduation/asr_wenet/wenet/wenet/test/test_
 wav_file_video_test = "/media/sfy/Study/graduation/asr_wenet/wenet/wenet/test/test_data/test_video/test_video.wav"
 
 use_wav_file = wav_file_60s
-
-class asr_grpc_client:
-    def __init__(self, hostname="127.0.0.1", port="10087", nbest=2, continuous_decoding=True):
-        self.host = hostname
-        self.port = port
-        self.nbest = nbest
-        self.continuous_decoding = continuous_decoding
-        self.done = False
-
-    def start_recognize(self):
-        self.done = False
-        self.asr_tast = threading.Thread(target=self.run)
-        self.asr_tast.start()
-
-    def end_recognize(self):
-        self.done = True
-        print("end1")
-        self.asr_tast.join()
-        print("end2")
-
-    def bidirectional_streaming_method(self):
-
-        def denoise(raw_data, sample_rate=16000):
-            pad_list = [0, 1, -4, 10, -16, 15, 2, -58, 783, 1362, 1207, 1278, 1281, 1254, 1218, 1087, 987, 1000, 989,
-                        999,
-                        979, 960, 1136, 1187, 1057, 1060, 1135, 1258, 1430, 1425, 1195, 1008, 825, 696, 669, 581, 562,
-                        668,
-                        793, 923, 1055, 1024, 882, 762, 646, 524, 443, 378, 311, 341, 383, 392, 331, 192, 158, 284, 393,
-                        337, 168, 129, 145, 87, 31, -162, -486, -668, -641, -556, -449, -402, -377, -257, -179, -268,
-                        -370,
-                        -499, -665, -742, -708, -571, -498, -553, -714, -992, -1163, -1098, -1045, -1017, -961, -853,
-                        -730,
-                        -651, -580, -584, -735, -1006, -1151, -1099, -1045, -1065, -1139, -1274, -1368, -1312, -1218,
-                        -1164,
-                        -1098, -1019, -956, -961, -949, -955, -993, -976, -928, -844, -745, -703, -676, -633, -658,
-                        -761,
-                        -823, -719, -597, -516, -390, -328, -388, -476, -559, -559, -407, -267, -281, -288, -267, -322,
-                        -339, -297, -307, -238, -111, 4, 115, 218, 243, 190, 186, 230, 326, 418, 543, 581, 462, 351,
-                        302,
-                        237, 319, 599, 828, 981, 1003, 867, 721, 688, 584, 474, 586, 748, 812, 815, 869, 856, 887, 956,
-                        905,
-                        931, 1101, 1188, 1090, 1012, 1043, 1018, 1026, 1057, 994, 959, 934, 917, 838, 745, 720, 749,
-                        882,
-                        883, 792, 832, 936, 985, 1000, 1048, 1045, 1066, 1091, 1068, 1022, 861, 661, 554, 537, 511, 456,
-                        430, 440, 534, 665, 640, 636, 710, 590, 311, 34, -165, -139, 127, 368, 455, 468, 375, 304, 385,
-                        345,
-                        165, 41, -80, -236, -327, -427, -547, -609, -650, -635, -530, -472, -486, -567, -646, -557,
-                        -410,
-                        -252, -195, -410, -615, -726, -833, -827, -681, -634, -737, -801, -851, -942, -926, -819, -707,
-                        -633, -590, -603, -705, -885, -1069, -1155, -1159, -1155, -1215, -1312, -1291, -1189, -1058,
-                        -975,
-                        -964, -924, -910, -896, -909, -881, -805, -827, -837, -827, -850, -836, -766, -761, -840, -899,
-                        -903, -819, -625, -574, -634, -663, -646, -470, -244, -79, -40, -148, -271, -380, -495, -455,
-                        -275,
-                        -219, -317, -332, -228, -61, 129, 149, 83, 68, 66, 101, 155, 252, 308, 245, 230, 294, 441, 533,
-                        517,
-                        547, 549, 601, 752, 843, 773, 667, 623, 530, 460, 445, 420, 461, 623, 746, 787, 841, 854, 819,
-                        784,
-                        762, 811, 930, 948, 919, 924, 932, 951, 966, 961, 942, 849, 769, 794, 817, 862, 871, 764, 675,
-                        682,
-                        709, 737, 849, 947, 1054, 1149, 1102, 905, 701, 503, 371, 350, 372, 364, 418, 531, 529, 518,
-                        539,
-                        568, 615, 654, 588, 384, 216, 181, 192, 242, 291, 171, 39, 6, 66, 141, 112, 102, 135, 89, -92,
-                        -242,
-                        -328, -430, -478, -511, -488, -403, -360, -411, -532, -618, -561, -421, -412, -463, -507, -555,
-                        -575, -655, -738, -827, -889, -846, -770, -662, -592, -604, -652, -690, -620, -618, -763, -928,
-                        -1045, -1078, -1101, -1185, -1261, -1239, -1251, -1101, -883, -830, -777, -754, -726, -650,
-                        -631,
-                        -696, -833, -846, -694, -588, -619, -796, -937, -920, -806, -621, -487, -491, -515, -432, -356,
-                        -344, -368, -321, -175, -128, -121, -120, -172, -204, -138, -101, -79, -42, -72, -29, -27, -9,
-                        87,
-                        184, 273, 313, 332, 337, 345, 394, 458, 452, 447, 532, 611, 603, 449, 376, 596, 810, 951, 1067,
-                        1065, 1008, 983, 932, 817, 791, 767, 662, 577, 610, 739, 918, 978, 807, 736, 819, 940, 1053,
-                        1118,
-                        1171, 1169, 1147, 1062, 1018, 1052, 1005, 924, 860, 807, 815, 880, 945, 875, 813, 939, 1022,
-                        1025,
-                        1009, 1004, 1100, 1207, 1197, 1044, 790, 537, 407, 523, 638, 637, 608, 555, 593, 751, 863, 760,
-                        637,
-                        562, 435, 341, 149, -20, -40, -51, 3, 105, 108, 102, 88, 91, 105, 148, 229, 164, 28, -179, -359,
-                        -401, -429, -541, -728, -775, -773, -829, -817, -805, -821, -710, -595, -591, -597, -649, -836,
-                        -976, -935, -809, -638, -572, -597, -730, -806, -718, -705, -809, -886, -886, -925, -998, -1117,
-                        -1229, -1198, -1157, -1253, -1396, -1500, -1490, -1359, -1180, -1064, -919, -724, -699, -719,
-                        -615,
-                        -611, -770, -891, -927, -835, -717, -699, -799, -808, -737, -702, -650, -646, -626, -569, -551,
-                        -564, -542, -452, -364, -260, -179, -171, -246, -306, -236, -229, -216, -204, -241, -105, 60,
-                        154,
-                        211, 284, 326, 220, 226, 353, 404, 402, 363, 274, 166, 253, 392, 351, 373, 586, 717, 839, 1083,
-                        1111, 1058, 1083, 971, 905, 997, 993, 975, 1054, 1054, 1007, 1054, 1065, 1016, 968, 969, 972,
-                        984,
-                        1040, 1161, 1268, 1306, 1298, 1175, 991, 902, 821, 774, 960, 1177, 1220, 1163, 1047, 1035, 1146,
-                        1195, 1100, 1003, 1066, 1109, 1174, 1163, 1012, 818, 639, 540, 507, 554, 579, 593, 651, 672,
-                        715,
-                        787, 876, 889, 746, 657, 581, 449, 294, 115, 70, 115, 223, 286, 214, 97, 26, -45, -93, -52, -42,
-                        -140, -195, -191, -258, -357, -419, -486, -564, -592, -565, -488, -422, -406, -358, -316, -435,
-                        -622, -656, -640, -661, -707, -837, -893, -776, -688, -738, -817, -788, -728, -746, -801, -865,
-                        -952, -966, -969, -1066, -1087, -1083]
-            padding_data = np.array(pad_list, dtype=np.int16)
-            # padding_num = len(padding_data)
-
-            raw_padding_data = np.concatenate([padding_data, raw_data])
-            processed_padding_data = logmmse.logmmse(data=raw_padding_data, sampling_rate=sample_rate)
-            return processed_padding_data[-len(raw_data):]
-
-        # create a generator
-        def request_messages(wav_file=use_wav_file):
-
-            data, sr = sf.read(wav_file, dtype='int16')
-            # data = logmmse.logmmse(data=data, sampling_rate=sr)
-
-
-            sample_rate = 16000
-            interval = 0.5
-            sample_interval = int(sample_rate * interval)
-
-            for i in range(-sample_interval, len(data), sample_interval):
-                if i == -sample_interval:
-                    dec_conf = pb2.Request.DecodeConfig(nbest_config=self.nbest,
-                                                        continuous_decoding_config=self.continuous_decoding)
-                    request = pb2.Request(decode_config=dec_conf)
-                    yield request
-                    time.sleep(0.1)
-                else:
-                    # chunk_data = denoise(data[i: min(i + sample_interval, len(data))]).tobytes()
-                    chunk_data = data[i: min(i + sample_interval, len(data))].tobytes()
-                    request = pb2.Request(audio_data=chunk_data)
-                    yield request
-                    time.sleep(0.1)
-
-        def request_messages_realtime(record_second=60):
-
-            dec_conf = pb2.Request.DecodeConfig(nbest_config=self.nbest,
-                                                continuous_decoding_config=self.continuous_decoding)
-            request = pb2.Request(decode_config=dec_conf)
-            yield request
-
-            sample_rate = 16000
-            interval = 0.5
-            chunk_size = int(sample_rate * interval)
-            p = pyaudio.PyAudio()
-            stream = p.open(format=pyaudio.paInt16, channels=1,
-                            rate=sample_rate, input=True,
-                            frames_per_buffer=chunk_size)
-
-            total_chunk = int(sample_rate / chunk_size * record_second)
-            for i in range(0, total_chunk + 1):
-                chunk_data = stream.read(chunk_size)
-                request = pb2.Request(audio_data=chunk_data)
-                yield request
-                time.sleep(0.01)
-
-        all_segment_text = []
-        all_segment_wordieces = []
-        self.asr_result = ""
-        self.asr_seg_result = []
-        last_tamp = 0
-
-        m = MacBertCorrector("/media/sfy/Study/graduation/PostProcess/model/macbert4csc-base-chinese")
-
-        response_iterator = self.stub.Recognize(request_messages())
-        for response in response_iterator:
-            if self.done:
-                break
-            if response.nbest and response.status == 0:
-                cur_segment_text = response.nbest[0].sentence.replace('</context>', '').replace('<context>', '')
-                if all_segment_text and all_segment_text[-1] == cur_segment_text:
-                    continue
-
-
-                is_seg_final = response.type == pb2.Response.Type.final_result
-                if is_seg_final and cur_segment_text:
-
-                    print(cur_segment_text)
-                    correct_sent, err = m.macbert_correct(cur_segment_text)
-                    edit_dis = minDistance(cur_segment_text, correct_sent)
-                    # result = corrector.ernie_csc_correct(cur_segment_text)[0]
-                    # print(result)
-                    print(correct_sent + '\n' + str(edit_dis))
-
-
-                    # print('\n final_result  '+cur_segment_text+'\n')
-                    all_segment_text.append(cur_segment_text)
-                    cur_segment_text = ""
-                    # print(all_segment_text, len(all_segment_text[-1]))
-
-                    cur_segment_wordpieces = []
-                    for wp in response.nbest[0].wordpieces:
-                        cur_segment_wordpieces.append((wp.word, wp.start, wp.end, wp.start-last_tamp))
-                        last_tamp = wp.end
-                    all_segment_wordieces.append(cur_segment_wordpieces)
-                    # print(all_segment_wordieces, len(all_segment_wordieces[-1]))
-
-
-
-                    assert len(all_segment_text[-1]) == len(all_segment_wordieces[-1])
-
-                total_text = "".join(all_segment_text) + "" + cur_segment_text
-                # if total_text:
-                #     sys.stdout.write('\r' + total_text)
-                #     sys.stdout.flush()
-
-                # print("cur_segment_text ", cur_segment_text)
-                # print("wordpiece ", response.nbest[0].wordpieces)
-
-                self.asr_result = total_text
-                self.asr_seg_result = all_segment_text + ([] if cur_segment_text == "" else [cur_segment_text])
-
-
-        edit_dis = minDistance(self.asr_result, label)
-        print("\nedit_dis ", edit_dis)
-        self.asr_result = ""
-
-    def run(self):
-        print("\n--------------start recorgnize---------------")
-        with grpc.insecure_channel("{}:{}".format(self.host, self.port)) as channel:
-            self.stub = pb2_grpc.ASRStub(channel)
-            self.bidirectional_streaming_method()
-        print("\n--------------end recorgnize---------------")
 
 
 def minDistance(word1: str, word2: str) -> int:
@@ -292,7 +98,6 @@ def minDistance(word1: str, word2: str) -> int:
 
         return dp[m][n]
 label = "我以与父亲不相见已二年余了我最不能忘记的是他的背影那年冬天祖母死了父亲的差使也交谢了正是祸不单行的日子我从北京到徐州打算跟着父亲奔丧回家到徐州见着父亲看见满院狼藉的东西又想起祖母不禁簌簌地流下眼泪父亲说事已如此不易难过好在天无绝人之路回家变卖点质父亲还了亏空又借钱办了丧事这些日子家中光景很是惨淡一半为了丧事一半为了父亲赋闲丧事完毕父亲要到南京谋事我也要回北京念书我们便同行到南京时有朋友约去逛街勾留了一日第二日上午"
-
 def displayWaveform(data, sr=16000): # 显示语音时域波形
 
     plt.subplot(2,1,1)
@@ -310,10 +115,737 @@ def displayWaveform(data, sr=16000): # 显示语音时域波形
     plt.show()
 
 
+class MacBertCorrector(object):
+    def __init__(self, model_dir, prun_sim_dict, tag_punctuation):
+        self.name = 'macbert_corrector'
+        t1 = time.time()
+        bin_path = os.path.join(model_dir, 'pytorch_model.bin')
+        if not os.path.exists(bin_path):
+            model_dir = "shibing624/macbert4csc-base-chinese"
+            logger.warning(f'local model {bin_path} not exists, use default HF model {model_dir}')
+
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.tokenizer = BertTokenizerFast.from_pretrained(model_dir)
+        self.model = BertForMaskedLM.from_pretrained(model_dir)
+        self.model.to(self.device)
+        # logger.debug("Use device: {}".format(self.device))
+        # logger.debug('Loaded macbert4csc model: %s, spend: %.3f s.' % (model_dir, time.time() - t1))
+
+        self.unk_tokens = [' ', '“', '”', '‘', '’', '\n', '…', '—', '擤', '\t', '֍', '玕', '']
+        self.tag_punctuation = tag_punctuation
+        self.total_punctuation = list(string.punctuation) + self.tag_punctuation
+
+        self.cossim_w2i_wc_file = prun_sim_dict
+        self.init_prun_sim_filter()
+
+
+
+    def get_errors(self, corrected_text, origin_text):
+        sub_details = []
+        for i, ori_char in enumerate(origin_text):
+            if i >= len(corrected_text):
+                break
+            if ori_char in self.unk_tokens:
+                # deal with unk word
+                corrected_text = corrected_text[:i] + ori_char + corrected_text[i:]
+                continue
+            if ori_char != corrected_text[i]:
+                if ori_char.lower() == corrected_text[i]:
+                    # pass english upper char
+                    corrected_text = corrected_text[:i] + ori_char + corrected_text[i + 1:]
+                    continue
+                sub_details.append((ori_char, corrected_text[i], i, i + 1))
+        sub_details = sorted(sub_details, key=operator.itemgetter(2))
+        return corrected_text, sub_details
+
+    def init_prun_sim_filter(self):
+        def save_pickle(file_name, data):
+            f = open(file_name, "wb")
+            pickle.dump(data, f)
+            f.close()
+
+        def load_pickle(file_name):
+            f = open(file_name, "rb+")
+            data = pickle.load(f)
+            f.close()
+            return data
+
+        self.cos_sim, self.word_to_idx, self.wc_dict = load_pickle(self.cossim_w2i_wc_file)
+
+    def pinyin_edit_distance(self, word1: str, word2: str):
+        m = len(word1)
+        n = len(word2)
+        if (m == 0 and n == 0) or word1 == word2:
+            return 0
+        if m == 0 or n == 0:
+            return max(m, n)
+
+        tone1 = tone2 = 1
+        if word1[-1].isdigit():
+            m -= 1
+            tone1 = int(word1[-1])
+        if word2[-1].isdigit():
+            n -= 1
+            tone2 = int(word2[-1])
+        tone_dis = abs(tone1 - tone2)
+
+        dp = [[0] * (n + 1) for _ in range(m + 1)]
+        for i in range(1, m + 1):
+            dp[i][0] = i
+        for j in range(1, n + 1):
+            dp[0][j] = j
+
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                c1 = word1[i - 1]
+                c2 = word2[j - 1]
+                if c1 == c2:
+                    dp[i][j] = dp[i - 1][j - 1]
+                else:
+                    dp[i][j] = min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]) + 1
+        prun_dis = dp[m][n]
+        return prun_dis + tone_dis * 0.3
+
+    def pinyin_sim_filter(self, target, candidates, context, target_idx=0):
+        res_sim = []
+        for c in candidates.split():
+            if c not in self.word_to_idx or target not in self.word_to_idx or c == target:
+                continue
+
+            cur_cos_sim = self.cos_sim[self.word_to_idx[c]][self.word_to_idx[target]]
+
+            cur_cand_pinyin = lazy_pinyin(c, style=Style.TONE3)[0]
+            cur_target_pinyin = lazy_pinyin(target, style=Style.TONE3)[0]
+            # print(cur_cand_pinyin, cur_target_pinyin)
+            cur_pinyin_dis = self.pinyin_edit_distance(cur_cand_pinyin, cur_target_pinyin)
+            cur_pinyin_sim = 10.0 if cur_pinyin_dis < 1e-3 else 1. / cur_pinyin_dis
+
+            cur_ngram_sim = 0
+            for k in range(2, 5):
+                cur_word = c + context[target_idx + 1:target_idx + k]
+                if cur_word in self.wc_dict:
+                    cur_sim = np.log10(self.wc_dict[cur_word])
+                    cur_ngram_sim = max(cur_ngram_sim, cur_sim)
+                if target_idx - k >= 0:
+                    cur_word = context[target_idx - k:target_idx] + c
+                    if cur_word in self.wc_dict:
+                        cur_sim = np.log10(self.wc_dict[cur_word])
+                        cur_ngram_sim = max(cur_ngram_sim, cur_sim)
+            if cur_pinyin_sim > 0.6 and cur_ngram_sim > 1e-5:
+                res_sim.append([c, cur_cos_sim, cur_pinyin_sim, cur_ngram_sim])
+
+        res_sim.sort(key=lambda x: x[1] * x[2] * x[3], reverse=True)
+        # print(res_sim)
+
+        return res_sim[0][0] if res_sim and res_sim[0][3] > 1e-5 else target
+
+    def split_text_by_maxlen(self, text, maxlen=512):
+        result = []
+        for i in range(0, len(text), maxlen):
+            result.append((text[i:i + maxlen], i))
+        return result
+
+    def macbert_correct_pinyin(self, text, threshold=0.9, verbose=True):
+        """
+        句子纠错
+        :param text: 句子文本
+        :param threshold: 阈值
+        :param verbose: 是否打印详细信息
+        :return: corrected_text, list[list], [error_word, correct_word, begin_pos, end_pos]
+        """
+        if not text:
+            return text, None
+
+        text_new = ''
+        details = []
+        # 长句切分为短句
+        blocks = self.split_text_by_maxlen(text, maxlen=128)
+        # print("block ", blocks)
+        block_texts = [block[0] for block in blocks]
+        inputs = self.tokenizer(block_texts, padding=True, return_tensors='pt').to(self.device)
+        with torch.no_grad():
+            outputs = self.model(**inputs)
+
+        for ids, (text, idx) in zip(outputs.logits, blocks):
+            decode_tokens_new = self.tokenizer.decode(torch.argmax(ids, dim=-1), skip_special_tokens=True).split(' ')
+            decode_tokens_old = self.tokenizer.decode(inputs['input_ids'][idx%128], skip_special_tokens=True).split(' ')
+            if len(decode_tokens_new) != len(decode_tokens_old):
+                continue
+            probs = torch.max(torch.softmax(ids, dim=-1), dim=-1)[0].cpu().numpy()
+            decode_tokens = ''
+            for i in range(len(decode_tokens_old)):
+                if probs[i + 1] >= threshold:
+                    decode_tokens += decode_tokens_new[i]
+
+                else:
+
+                    if decode_tokens_old[i] not in self.word_to_idx or decode_tokens_old[i] in self.tag_punctuation:
+                        decode_tokens += decode_tokens_old[i]
+                    else:
+                        values, indices = ids[i+1].topk(20, dim=-1, largest=True, sorted=True)
+                        tokens = self.tokenizer.decode(indices, skip_special_tokens=True)
+
+                        context = "".join(decode_tokens_new)
+                        res = self.pinyin_sim_filter(target=decode_tokens_old[i], candidates=tokens,
+                                                     context=context, target_idx=i)
+                        # print("correct res ", decode_tokens_old[i], res, )
+
+                        decode_tokens += res
+
+            corrected_text = decode_tokens[:len(text)]
+            corrected_text, sub_details = self.get_errors(corrected_text, text)
+            text_new += corrected_text
+            sub_details = [(i[0], i[1], idx + i[2], idx + i[3]) for i in sub_details]
+            details.extend(sub_details)
+
+
+        return text_new, details
+
+
+class BiLSTM(nn.Module):
+    def __init__(self, input_dim, hidden_dim, output_dim,
+                 num_layers, batch_size, device='cpu',
+                 vocab_size=2):
+        super(BiLSTM, self).__init__()
+        self.input_dim = input_dim
+        self.hidden_dim = hidden_dim
+        self.output_dim = output_dim
+        self.batch_size = batch_size
+        self.num_layers = num_layers
+        self.device = device
+
+        self.word_embeds = nn.Embedding(vocab_size, input_dim)
+        self.lstm = nn.LSTM(input_dim, hidden_dim // 2, num_layers=num_layers, bidirectional=True, batch_first=True)
+        self.fc = nn.Linear(hidden_dim, output_dim)
+        self.hidden = self.init_hidden()
+
+        self.to(self.device)
+
+    def init_embedding(self, embedding):
+        self.word_embeds.weight = nn.Parameter(embedding)
+        self.word_embeds.weight.requires_grad = False
+
+    def init_hidden(self):
+        return (torch.randn(2 * self.num_layers, self.batch_size, self.hidden_dim // 2).to(self.device),
+                torch.randn(2 * self.num_layers, self.batch_size, self.hidden_dim // 2).to(self.device))
+
+    def forward(self, inputs):
+        embeddings = self.word_embeds(inputs)
+        self.hidden = self.init_hidden()
+        lstm_out, self.hidden = self.lstm(embeddings, self.hidden)
+        tag_scores = self.fc(lstm_out)
+#         tag_scores = F.softmax(tag_space, dim=-1)
+        return tag_scores
+
+class PunctuationAppender:
+    def __init__(self, lstm_model_path, vocab_file, tag_punctuation, w2v_model_path=None):
+        self.vocab_file = vocab_file
+        self.tag_punctuation = tag_punctuation
+        self.lstm_model_path = lstm_model_path
+        self.w2v_model_path = w2v_model_path
+        self.unknown_word = '<UNK>'
+        self.padding_word = '<PAD>'
+
+
+
+        self.init_vocab()
+        self.init_model()
+        self.cache_res = []
+
+
+    def init_vocab(self):
+        self.vocab = []
+        with open(self.vocab_file) as f:
+            for word in f.readlines():
+                word = word.strip()
+                if word:
+                    self.vocab.append(word)
+        # print("vocab size ", len(self.vocab))
+
+        self.word_to_idx = {v: i for i, v in enumerate(self.vocab)}
+        self.tag_to_idx = {v: i for i, v in enumerate(self.tag_punctuation)}
+
+    def init_model(self):
+        batch_size = 1
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.lstm = BiLSTM(input_dim=300, hidden_dim=160, output_dim=7, num_layers=3,
+                      batch_size=batch_size, device=self.device, vocab_size=len(self.vocab))
+
+        self.lstm.load_state_dict(torch.load(self.lstm_model_path))
+        self.lstm = self.lstm.to(self.device)
+
+        # self.w2v_model_path = '/media/sfy/Study/graduation/PostProcess/model/sgns.wiki.word.bz2'
+        # self.w2v_model = gensim.models.KeyedVectors.load_word2vec_format(w2v_model_path, encoding="utf-8")
+
+    def punc_predict(self, sentence):
+        senseg = list(jieba.cut(sentence, cut_all=False))
+        if not senseg:
+            return ""
+
+        xpara = [self.word_to_idx[w] if w in self.word_to_idx else self.word_to_idx[self.unknown_word] for w in senseg]
+        x = torch.LongTensor(xpara)
+        x = torch.unsqueeze(x, 0)
+        with torch.no_grad():
+            x = x.to(self.device)
+            tag_scores = self.lstm(x)
+            _, tag_index = torch.max(torch.squeeze(tag_scores, 0), dim=1)
+
+        punc_res = ''
+        for i in range(len(tag_index)):
+            cur_punc = self.tag_punctuation[int(tag_index[i])]
+            none_punc = self.tag_punctuation[0]
+            if len(senseg[i]) == 1:
+                punc_res += cur_punc
+            else:
+                punc_res += none_punc*(len(senseg[i])-1) + cur_punc
+
+        assert len(punc_res) == len(sentence)
+        return punc_res
+
+    def append_punc_raw(self, sentence):
+        if not sentence:
+            return sentence
+        punc_predict_res = self.punc_predict(sentence)
+        res = ""
+        assert len(sentence) == len(punc_predict_res)
+        for i in range(len(sentence)):
+            res += sentence[i]
+            res += punc_predict_res[i] if punc_predict_res[i] != 'X' else ""
+        return res
+
+    def append_punc_v1(self, asr_seg_result, asr_seg_wordieces, final_seg_count):
+        total_sentence = "".join(asr_seg_result)
+        total_len = len(total_sentence)
+        if not total_sentence:
+            return ""
+
+
+        cache_seg_num = len(self.cache_res)
+        if 0 < cache_seg_num < len(asr_seg_wordieces) and asr_seg_wordieces[cache_seg_num]:
+            if self.cache_res[-1] and self.cache_res[-1][-1] not in self.tag_punctuation[1:]:
+                if asr_seg_wordieces[cache_seg_num][0][3] > 800:
+                    self.cache_res[-1] += '。'
+                elif asr_seg_wordieces[cache_seg_num][0][3] > 300:
+                    self.cache_res[-1] += '，'
+        cache_res = "".join(self.cache_res)
+
+        start_seg_idx = cache_seg_num
+        end_seg_idx = len(asr_seg_result)
+
+        cur_segs_len = list(map(len, asr_seg_result[start_seg_idx:end_seg_idx]))
+        cur_sentence = "".join(asr_seg_result[start_seg_idx:])
+        cur_punc_predict_res = self.punc_predict(cur_sentence)
+        cur_punc_predict_seg_res = []
+        cur_seg_start_idx = 0
+        for l in cur_segs_len:
+            cur_punc_predict_seg_res.append(cur_punc_predict_res[cur_seg_start_idx:cur_seg_start_idx+l])
+            cur_seg_start_idx += l
+
+        res_text = cache_res
+
+        for seg_idx in range(start_seg_idx, end_seg_idx):
+            cur_seg_punc_predict = cur_punc_predict_seg_res[seg_idx-cache_seg_num]
+
+            if seg_idx < len(asr_seg_wordieces):
+                cur_seg_wordpieces = asr_seg_wordieces[seg_idx]
+            else:
+                cur_seg_wordpieces = []
+
+            cur_seg_raw_text = asr_seg_result[seg_idx]
+            cur_seg_res_text = ""
+
+            assert len(cur_seg_raw_text) == len(cur_seg_punc_predict)
+            assert len(cur_seg_raw_text) == len(cur_seg_wordpieces)
+
+            for i,c in enumerate(cur_seg_raw_text):
+                cur_seg_res_text += c
+                if (cur_seg_punc_predict[i] in ['，', '、', '：'] and (cur_seg_wordpieces and cur_seg_wordpieces[i][4] > 300)) or \
+                    (cur_seg_punc_predict[i] in ['。', '！', '？'] and (cur_seg_wordpieces and cur_seg_wordpieces[i][4] > 600)):
+                    cur_seg_res_text += cur_seg_punc_predict[i]
+                elif (cur_seg_wordpieces and cur_seg_wordpieces[i][4] > 400):
+                    cur_seg_res_text += "，"
+
+            res_text += cur_seg_res_text
+            if cache_seg_num <= seg_idx < end_seg_idx-1 or final_seg_count==len(asr_seg_result):
+                self.cache_res.append(cur_seg_res_text)
+
+        return res_text
+
+    def clear(self):
+        self.cache_res = []
+
+class AsrGrpcClient:
+    def __init__(self, hostname="127.0.0.1", port="10087", nbest=1, continuous_decoding=True):
+        self.host = hostname
+        self.port = port
+        self.nbest = nbest
+        self.continuous_decoding = continuous_decoding
+        self.asr_task = None
+        self.done = False
+        self.init_asr_result()
+
+    def init_asr_result(self):
+        self.asr_rt_result = ""
+        self.asr_seg_result = []
+        self.asr_seg_wordieces = []
+        self.final_seg_count = 0
+
+    class Frame(object):
+        def __init__(self, bytes, timestamp, duration):
+            self.bytes = bytes
+            self.timestamp = timestamp
+            self.duration = duration
+            self.is_voice = None
+
+    def audio_generator(self, file_or_realtime=None,
+                        frame_duration_ms=500, sample_rate=16000, channels=1,
+                        record_second=20):
+
+        frame_duration_s = frame_duration_ms / 1000.0
+        frame_byte_size = int(sample_rate * frame_duration_s * 2)
+
+        def yield_frame_data(audio):
+            offset = 0
+            timestamp = 0.0
+            while offset + frame_byte_size < len(audio):
+                yield self.Frame(audio[offset: offset + frame_byte_size], 0.0, frame_duration_s)
+                timestamp += frame_duration_s
+                offset += frame_byte_size
+
+        if file_or_realtime is None:
+
+            frame_duration_s = frame_duration_ms / 1000.0
+            chunk_size = int(sample_rate * frame_duration_s)
+            p = pyaudio.PyAudio()
+            stream = p.open(format=pyaudio.paInt16, channels=channels,
+                            rate=sample_rate, input=True,
+                            frames_per_buffer=chunk_size)
+            chunk_size = int(sample_rate * frame_duration_ms / 1000.)
+            total_chunk = int(sample_rate / chunk_size * record_second)
+            timestamp = datetime.now()
+
+            for i in range(0, total_chunk + 1):
+                chunk_data = stream.read(chunk_size)
+                yield self.Frame(chunk_data, 0.0, frame_duration_s)
+
+            stream.stop_stream()
+            stream.close()
+            p.terminate()
+
+        else:
+            raw_data, sr = sf.read(file_or_realtime, dtype=np.int16)
+            assert sr == sample_rate
+            audio = raw_data.tobytes()
+
+            for frame in yield_frame_data(audio):
+                yield frame
+                time.sleep(frame_duration_s)
+
+    """ 
+    recgnize_type  1: recognize from wav_file
+                   2: recognize from pyaudio
+    """
+    def start_recognize(self, recognize_type=2, wav_file=None, ):
+        self.done = False
+        self.wav_file = wav_file
+        self.recognize_type = recognize_type
+        if not wav_file:
+            self.recognize_type = 2
+
+        self.init_asr_result()
+
+        self.asr_task = threading.Thread(target=self.run)
+        self.asr_task.start()
+
+    def end_recognize(self):
+        self.done = True
+        self.wav_file = None
+
+        # self.init_asr_result()
+        # if self.asr_task is not None:
+        #     self.asr_task.join()
+        #     self.asr_task = None
+
+    def bidirectional_streaming_method(self):
+
+        # create a generator
+        def request_messages(wav_file = self.wav_file):
+
+            data, sr = sf.read(wav_file, dtype='int16')
+
+            sample_rate = 16000
+            interval = 0.5
+            sample_interval = int(sample_rate * interval)
+
+            for i in range(-sample_interval, len(data), sample_interval):
+                if i == -sample_interval:
+                    dec_conf = pb2.Request.DecodeConfig(nbest_config=self.nbest,
+                                                        continuous_decoding_config=self.continuous_decoding)
+                    request = pb2.Request(decode_config=dec_conf)
+                    yield request
+                    time.sleep(interval)
+                else:
+                    chunk_data = data[i: min(i + sample_interval, len(data))].tobytes()
+                    request = pb2.Request(audio_data=chunk_data)
+                    yield request
+                    time.sleep(interval)
+
+        def request_messages_realtime(record_second=60):
+
+            dec_conf = pb2.Request.DecodeConfig(nbest_config=self.nbest,
+                                                continuous_decoding_config=self.continuous_decoding)
+            request = pb2.Request(decode_config=dec_conf)
+            yield request
+
+            sample_rate = 16000
+            interval = 0.5
+            chunk_size = int(sample_rate * interval)
+
+            p = pyaudio.PyAudio()
+            stream = p.open(format=pyaudio.paInt16, channels=1,
+                            rate=sample_rate, input=True,
+                            frames_per_buffer=chunk_size)
+
+            if self.wav_file is not None:
+                wf = wave.open(self.wav_file, 'wb')
+                wf.setnchannels(1)
+                wf.setsampwidth(p.get_sample_size(pyaudio.paInt16))
+                wf.setframerate(sample_rate)
+
+            total_chunk = int(sample_rate / chunk_size * record_second)
+            for i in range(0, total_chunk + 1):
+                chunk_data = stream.read(chunk_size)
+                request = pb2.Request(audio_data=chunk_data)
+                yield request
+
+                if self.wav_file is not None:
+                    wf.writeframes(chunk_data)
+                time.sleep(0.01)
+
+            stream.stop_stream()
+            stream.close()
+            p.terminate()
+            if self.wav_file is not None:
+                wf.close()
+
+        def request_messages_generator(record_second=60):
+
+            sample_rate = 16000
+            channels = 1
+            frame_duration_ms = 500
+
+            dec_conf = pb2.Request.DecodeConfig(nbest_config=self.nbest,
+                                                continuous_decoding_config=self.continuous_decoding)
+            request = pb2.Request(decode_config=dec_conf)
+            yield request
+
+            generator = self.audio_generator(file_or_realtime=None if self.recognize_type==2 else self.wav_file,
+                                        frame_duration_ms=frame_duration_ms, sample_rate=sample_rate, channels=channels,
+                                        record_second=record_second)
+
+            is_record = self.wav_file is not None and self.recognize_type==2
+            if is_record:
+                wf = wave.open(self.wav_file, 'wb')
+                wf.setnchannels(channels)
+                wf.setsampwidth(2)
+                wf.setframerate(sample_rate)
+
+            for frame in generator:
+                frame_byte_date = frame.bytes
+                request = pb2.Request(audio_data=frame_byte_date)
+                yield request
+                if is_record:
+                    wf.writeframes(frame_byte_date)
+                # time.sleep(0.005)
+
+            if is_record:
+                wf.close()
+
+
+        all_segment_text = []
+        all_segment_wordpieces = []
+
+        if self.recognize_type in [1,2]:
+            response_iterator = self.stub.Recognize(request_messages_generator())
+        else:
+            return
+
+        for response in response_iterator:
+            if self.done:
+                break
+            if response.nbest and response.status == 0:
+                cur_segment_text = response.nbest[0].sentence.replace('</context>', '').replace('<context>', '')
+                if (all_segment_text and all_segment_text[-1] == cur_segment_text) or not cur_segment_text:
+                    continue
+
+                cur_segment_wordpieces = []
+                if response.nbest[0].wordpieces:
+                    for wp in response.nbest[0].wordpieces:
+                        if self.asr_seg_wordieces or cur_segment_wordpieces:
+                            prev_wordpiece = self.asr_seg_wordieces[-1][-1] if not cur_segment_wordpieces else \
+                                cur_segment_wordpieces[-1]
+                            prev_wordpiece[4] = wp.start - prev_wordpiece[2]
+                            cur_segment_wordpieces.append([wp.word, wp.start, wp.end, prev_wordpiece[4], 0])
+                        else:
+                            cur_segment_wordpieces.append([wp.word, wp.start, wp.end, 3600000, 0])
+                    assert len(cur_segment_text) == len(cur_segment_wordpieces)
+
+                is_seg_final = response.type == pb2.Response.Type.final_result
+                if is_seg_final:
+                    self.final_seg_count += 1
+                    all_segment_text.append(cur_segment_text)
+                    cur_segment_text = ""
+
+                    all_segment_wordpieces.append(cur_segment_wordpieces)
+                    cur_segment_wordpieces = []
+
+                    # cur_wordpiece = [(wp.word, wp.start, wp.end) for wp in response.nbest[0].wordpieces]
+                    # self.asr_seg_timestamp.append(cur_wordpiece)
+
+                total_text = "".join(all_segment_text) + "" + cur_segment_text
+                # if total_text:
+                #     sys.stdout.write('\r' + total_text)
+                #     sys.stdout.flush()
+
+                self.asr_rt_result = total_text
+                self.asr_seg_result = (all_segment_text + [cur_segment_text]) if cur_segment_text != "" else all_segment_text
+                self.asr_seg_wordieces = (all_segment_wordpieces + [cur_segment_wordpieces]) if cur_segment_wordpieces else all_segment_wordpieces
+
+
+    def run(self):
+        print("\r--------------start recorgnize---------------")
+        with grpc.insecure_channel("{}:{}".format(self.host, self.port)) as channel:
+            self.stub = pb2_grpc.ASRStub(channel)
+            self.bidirectional_streaming_method()
+        print("\r--------------end recorgnize---------------")
+
+
+
+class AsrSubtitleGenerator:
+    def __init__(self):
+        self.timer_is_running = False
+        self.use_punc_predictor = False
+        self.use_lm_corrector = False
+
+        self.tag_punctuation = ['X', '，', '。', '！', '？', '、', '：']
+        # self.init_w2v_path = '/media/sfy/Study/graduation/PostProcess/model/sgns.wiki.word.bz2'
+        # self.emb_model_path = "/media/sfy/Study/graduation/PostProcess/ChinesePunctuationPredictor/model/w2v_embedding.npy"
+        self.vocab_file = "/media/sfy/Study/graduation/PostProcess/ChinesePunctuationPredictor/model/vocab.txt"
+        self.lstm_model_path = "/media/sfy/Study/graduation/PostProcess/ChinesePunctuationPredictor/model/wiki_200w_1/bilstm_20_32.final.pt"
+        self.lstm_model_path = "/media/sfy/Study/graduation/PostProcess/ChinesePunctuationPredictor/model/wiki_158w_infrequent/bilstm_2_32.final.pt"
+
+        self.corrector_model_path = "/media/sfy/Study/graduation/PostProcess/model/macbert4csc-base-chinese"
+        self.cossim_w2i_wc_file = "/media/sfy/Study/graduation/PostProcess/pycorrector/dict/cossim_w2i_wc.pkl"
+
+        self.asr_client = AsrGrpcClient()
+        if self.use_punc_predictor:
+            self.punc_predictor = PunctuationAppender(lstm_model_path=self.lstm_model_path,
+                                                      vocab_file=self.vocab_file, tag_punctuation=self.tag_punctuation)
+        if self.use_lm_corrector:
+            self.lm_corrector = MacBertCorrector(model_dir=self.corrector_model_path,
+                                                 prun_sim_dict=self.cossim_w2i_wc_file, tag_punctuation=self.tag_punctuation)
+
+        self.reset_subtitle_param()
+
+
+
+    def reset_subtitle_param(self, max_subtitle_len = 23, asr_timer_interval = 500):
+        self.subtitle = ""
+        self.subtitle_cache = []
+        self.last_pos = 0
+        self.remain_times = 0
+        self.max_subtitle_len = max_subtitle_len
+        self.asr_timer_interval = asr_timer_interval
+
+    def start_generate(self, recognize_type=1, wav_file=use_wav_file, use_inner_timer = False):
+
+        if use_inner_timer:
+            self.timer = threading.Timer(self.asr_timer_interval/1000., self.asr_timer,)
+            self.timer.start()
+            self.timer_is_running = True
+
+        self.asr_client.start_recognize(recognize_type=recognize_type, wav_file=wav_file, )
+
+    def end_generate(self):
+
+        if self.timer_is_running:
+            self.timer_is_running = False
+            self.timer.join()
+
+        self.asr_client.end_recognize()
+        self.punc_predictor.clear()
+        self.reset_subtitle_param()
+
+    def asr_timer(self):
+        if self.timer_is_running:
+            self.generate_subtitle()
+            self.timer = threading.Timer(self.asr_timer_interval/1000., self.asr_timer,)
+            self.timer.start()
+
+    def generate_subtitle(self):
+        # text = self.asr_client.asr_rt_result
+        # print("asr timer time ", time.time() - self.start_time)
+        # self.start_time = time.time()
+
+        asr_seg_result = self.asr_client.asr_seg_result
+        asr_seg_wordieces = self.asr_client.asr_seg_wordieces
+        final_seg_count = self.asr_client.final_seg_count
+        text = self.asr_client.asr_rt_result
+        # print("asr_seg_result ", asr_seg_result)
+        # print(self.asr.asr_seg_result)
+        # print(self.asr.asr_seg_wordieces)
+        # print(self.asr.final_seg_count, len(self.asr.asr_seg_result), len(self.asr.asr_seg_wordieces))
+        start_time = time.time()
+        if self.use_punc_predictor:
+            text = self.punc_predictor.append_punc_v1(asr_seg_result, asr_seg_wordieces, final_seg_count)
+        punc_predictor_time = time.time() - start_time
+
+        if self.use_lm_corrector:
+            correct_raw_text = text[self.last_pos:]
+            corrected_text,_ = self.lm_corrector.macbert_correct_pinyin(correct_raw_text)
+            text = text[:self.last_pos] + corrected_text
+        corrector_time = time.time() - start_time - punc_predictor_time
+        print("text ", text)
+
+
+        cur_subtitle = text[self.last_pos:]
+        while len(cur_subtitle) > self.max_subtitle_len or self.remain_times*self.asr_timer_interval>1400:
+            pre_len = len(self.subtitle)
+            # cur_len = min(len(cur_subtitle), self.max_subtitle_len)
+            self.subtitle_cache.append(self.subtitle)
+            self.last_pos += pre_len
+            cur_subtitle = text[self.last_pos:]
+            self.remain_times = 0
+
+        # remove head puncturation
+        if self.last_pos < len(text) and text[self.last_pos] in self.tag_punctuation:
+            if self.subtitle_cache:
+                self.subtitle_cache[-1] += text[self.last_pos]
+            self.last_pos += 1
+            cur_subtitle = cur_subtitle[1:]
+
+        self.remain_times = self.remain_times+1 if self.subtitle == cur_subtitle else 0
+        self.subtitle = cur_subtitle
+
+        print(punc_predictor_time, corrector_time, self.subtitle)
+
+        self.display_text = "\n".join(self.subtitle_cache[-25:] + [cur_subtitle])
+        # self.textBrowser.setPlainText(display_text)
+
+        return self.subtitle, self.display_text
+
 
 if __name__ == '__main__':
-    client = asr_grpc_client()
-    client.start_recognize()
-    exit()
+
+    asr_subtitle_generator = AsrSubtitleGenerator()
+
+    asr_subtitle_generator.start_generate(use_inner_timer=True)
+    # time.sleep(10)
+    # asr_subtitle_generator.end_generate()
+
+    test_text = "我以与父亲不相见一二年余了我最不能忘记的是他的背影那年冬天祖母死了父亲的差事也交卸了正是祸不单行的日子我从北京到徐州打算跟着父亲奔丧回家到徐州按照父亲看见满月狼藉的东西又想起祖母不禁簌簌地流下眼泪父亲说事已如此不会难过好在天无绝人之路回家变卖田志父亲怀了亏空又借钱办了丧事这些日子加工光景很是惨败一半为了丧事一半为了父亲付钱丧事完毕父亲要到南京谋事我也要回北京念书我们便同行到南京时有朋友约去逛街勾留了一日第二日"
+    print(minDistance(test_text, label))
+
+
 
 

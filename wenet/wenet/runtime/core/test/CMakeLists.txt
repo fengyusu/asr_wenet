@@ -16,3 +16,6 @@ add_test(POST_PROCESSOR_TEST post_processor_test)
 add_executable(feature_pipeline_test feature_pipeline_test.cc)
 target_link_libraries(feature_pipeline_test PUBLIC frontend)
 add_test(FEATURE_PIPELINE_TEST feature_pipeline_test)
+
+#add_executable(ctc_lm_prefix_beam_search_test ctc_lm_prefix_beam_search_test.cc)
+#target_link_libraries(ctc_lm_prefix_beam_search_test PUBLIC lm/kenlm)
